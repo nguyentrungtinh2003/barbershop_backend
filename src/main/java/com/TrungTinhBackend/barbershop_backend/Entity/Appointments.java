@@ -35,7 +35,15 @@ public class Appointments {
     @JoinColumn(name = "barber_id")
     private Users barber;
 
+    @ManyToMany
+    @JoinTable(name = "appointment_service",
+    joinColumns = @JoinColumn(name = "appointment_id"),
+            inverseJoinColumns = @JoinColumn(name = "service_id")
+    )
     private List<Services> services;
+
+    @OneToOne(mappedBy = "appointments", cascade = CascadeType.ALL)
+    private Payments payments;
 
     private LocalDateTime createdAt;
 

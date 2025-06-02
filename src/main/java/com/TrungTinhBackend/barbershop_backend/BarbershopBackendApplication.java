@@ -10,12 +10,9 @@ import java.util.TimeZone;
 public class BarbershopBackendApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(BarbershopBackendApplication.class, args);
-
 		TimeZone.setDefault(TimeZone.getTimeZone("Asia/Ho_Chi_Minh"));
 		Dotenv dotenv = Dotenv.load();
 
-		// Đọc các biến từ file .env và thiết lập chúng vào hệ thống
 		System.setProperty("DATABASE_URL", dotenv.get("DATABASE_URL"));
 		System.setProperty("DATABASE_USERNAME", dotenv.get("DATABASE_USERNAME"));
 		System.setProperty("DATABASE_PASSWORD", dotenv.get("DATABASE_PASSWORD"));
@@ -41,6 +38,8 @@ public class BarbershopBackendApplication {
 		System.setProperty("PAYPAL_CLIENT_ID", dotenv.get("PAYPAL_CLIENT_ID"));
 		System.setProperty("PAYPAL_CLIENT_SECRET", dotenv.get("PAYPAL_CLIENT_SECRET"));
 		System.setProperty("PAYPAL_MODE", dotenv.get("PAYPAL_MODE"));
+
+		SpringApplication.run(BarbershopBackendApplication.class, args);
 	}
 
 }

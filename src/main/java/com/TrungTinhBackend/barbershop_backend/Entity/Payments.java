@@ -1,5 +1,6 @@
 package com.TrungTinhBackend.barbershop_backend.Entity;
 
+import com.TrungTinhBackend.barbershop_backend.Enum.PaymentMethod;
 import com.TrungTinhBackend.barbershop_backend.Enum.PaymentStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -25,11 +26,14 @@ public class Payments {
     private Users customer;
 
     @OneToOne
+    @JoinColumn(name = "appointment_id", referencedColumnName = "id")
     private Appointments appointments;
 
     private Double amount;
 
     private PaymentStatus paymentStatus;
+
+    private PaymentMethod paymentMethod;
 
     private LocalDateTime createdAt;
 
