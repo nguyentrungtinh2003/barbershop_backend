@@ -49,6 +49,10 @@ public class Users implements UserDetails {
 
     private boolean isDeleted;
 
+    private String otp;
+
+    private LocalDateTime otpExpiry;
+
     @OneToMany(mappedBy = "customer")
     private List<Payments> payments;
 

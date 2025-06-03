@@ -7,4 +7,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UsersRepository extends JpaRepository<Users,Long> {
     Users findByUsernameAndIsDeleted(String username, boolean isDeleted);
+    Users findByEmail(String email);
+    Users findByUsername(String username);
 }
