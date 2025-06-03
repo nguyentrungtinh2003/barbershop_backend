@@ -19,6 +19,7 @@ public interface UserService {
     APIResponse updateUser(Long id, UserDTO userDTO, MultipartFile img) throws IOException;
     APIResponse deleteUser(Long id);
     APIResponse restoreUser(Long id);
+    APIResponse searchUser(String keyword, int page, int size);
     APIResponse sendOtpToEmail(String email) throws Exception;
     APIResponse verifyOtpAndChangePassword(ResetPasswordDTO resetPasswordDTO) throws Exception;
 }

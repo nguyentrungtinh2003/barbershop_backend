@@ -58,6 +58,13 @@ public class UsersController {
         return ResponseEntity.ok(userService.restoreUser(id));
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<APIResponse> searchUser(@RequestParam(name = "keyword") String keyword,
+                                                  @RequestParam(defaultValue = "0") int page,
+                                                  @RequestParam(defaultValue = "6") int size) throws IOException {
+        return ResponseEntity.ok(userService.searchUser(keyword, page, size));
+    }
+
     @PostMapping("/forgot-password")
     public ResponseEntity<APIResponse> forgotPassword(@RequestBody ResetPasswordDTO resetPasswordDTO) throws Exception {
         return ResponseEntity.ok(userService.sendOtpToEmail(resetPasswordDTO.getEmail()));

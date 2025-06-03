@@ -13,12 +13,14 @@ import com.TrungTinhBackend.barbershop_backend.Service.Email.EmailService;
 import com.TrungTinhBackend.barbershop_backend.Service.Img.ImgService;
 import com.TrungTinhBackend.barbershop_backend.Service.Jwt.JwtUtils;
 import com.TrungTinhBackend.barbershop_backend.Service.RefreshTokenService.RefreshTokenService;
+import com.TrungTinhBackend.barbershop_backend.Service.Search.Specification.UserSpecification;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -236,6 +238,22 @@ public class UserServiceImpl implements UserService{
         apiResponse.setStatusCode(200L);
         apiResponse.setMessage("Restore user with id = "+id+" success");
         apiResponse.setData(user);
+        apiResponse.setTimestamp(LocalDateTime.now());
+        return apiResponse;
+    }
+
+    @Override
+    public APIResponse searchUser(String keyword, int page, int size) {
+        APIResponse apiResponse = new APIResponse();
+
+        Pageable pageable = PageRequest.of(page,size);
+        Specification<Users> specification = UserSpecification.searchByKeyword(keyword);
+
+        Page<Users> users = usersRepository.findAll(specification,pageable);
+
+        apiResponse.setStatusCode(200L);
+        apiResponse.setMessage("Search user with keyword = "+keyword+" success");
+        apiResponse.setData(users);
         apiResponse.setTimestamp(LocalDateTime.now());
         return apiResponse;
     }
