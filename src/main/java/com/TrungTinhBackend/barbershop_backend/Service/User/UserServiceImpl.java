@@ -4,9 +4,11 @@ import com.TrungTinhBackend.barbershop_backend.DTO.LoginDTO;
 import com.TrungTinhBackend.barbershop_backend.DTO.RegisterDTO;
 import com.TrungTinhBackend.barbershop_backend.DTO.ResetPasswordDTO;
 import com.TrungTinhBackend.barbershop_backend.DTO.UserDTO;
+import com.TrungTinhBackend.barbershop_backend.Entity.RefreshTokens;
 import com.TrungTinhBackend.barbershop_backend.Entity.Users;
 import com.TrungTinhBackend.barbershop_backend.Enum.RoleEnum;
 import com.TrungTinhBackend.barbershop_backend.Exception.NotFoundException;
+import com.TrungTinhBackend.barbershop_backend.Repository.RefreshTokensRepository;
 import com.TrungTinhBackend.barbershop_backend.Repository.UsersRepository;
 import com.TrungTinhBackend.barbershop_backend.Response.APIResponse;
 import com.TrungTinhBackend.barbershop_backend.Service.Email.EmailService;
@@ -56,10 +58,13 @@ public class UserServiceImpl implements UserService{
     private RefreshTokenService refreshTokenService;
 
     @Autowired
+    private RefreshTokensRepository refreshTokensRepository;
+
+    @Autowired
     private ImgService imgService;
 
     @Override
-    public APIResponse register(RegisterDTO registerDTO) {
+    public APIResponse register(RegisterDTO registerDTO, MultipartFile img) throws IOException {
         APIResponse apiResponse = new APIResponse();
 
         Users user = usersRepository.findByEmail(registerDTO.getEmail());
@@ -67,14 +72,36 @@ public class UserServiceImpl implements UserService{
             throw new RuntimeException("Email already exists !");
         }
         Users user1 = new Users();
+
         user1.setUsername(registerDTO.getUsername());
         user1.setPassword(passwordEncoder.encode(registerDTO.getPassword()));
         user1.setEmail(registerDTO.getEmail());
-        user1.setRoleEnum(RoleEnum.CUSTOMER);
+
+        if(registerDTO.getRoleEnum() != null) {
+            user1.setRoleEnum(registerDTO.getRoleEnum());
+        }else {
+            user1.setRoleEnum(RoleEnum.CUSTOMER);
+        }
+
+        if(registerDTO.getPhoneNumber() != null && !registerDTO.getPhoneNumber().isEmpty()) {
+            user1.setPhoneNumber(registerDTO.getPhoneNumber());
+        }
+
+        if(registerDTO.getAddress() != null && !registerDTO.getAddress().isEmpty()) {
+            user1.setAddress(registerDTO.getAddress());
+        }
+
+        if(img != null) {
+            user1.setImg(imgService.uploadImg(img));
+        }
+
+        if(registerDTO.getDescription() != null && !registerDTO.getDescription().isEmpty()) {
+            user1.setDescription(registerDTO.getDescription());
+        }
+
         user1.setDeleted(false);
 
         usersRepository.save(user1);
-
 
         // Gửi email sau khi đăng ký thành công
         String to = user1.getEmail();
@@ -307,6 +334,37 @@ public class UserServiceImpl implements UserService{
 
         apiResponse.setStatusCode(200L);
         apiResponse.setMessage("Reset password success !");
+        apiResponse.setData(null);
+        apiResponse.setTimestamp(LocalDateTime.now());
+        return apiResponse;
+    }
+
+    @Override
+    public APIResponse logout(Long id,HttpServletResponse response) {
+        APIResponse apiResponse = new APIResponse();
+
+        Users user = usersRepository.findById(id).orElseThrow(
+                () -> new NotFoundException("User not found !")
+        );
+
+        RefreshTokens refreshTokens = refreshTokensRepository.findByUsers(user);
+
+        if(refreshTokens != null) {
+            refreshTokensRepository.delete(refreshTokens);
+        }
+
+        ResponseCookie jwtCookie = ResponseCookie.from("authToken", "")
+                .httpOnly(true)
+                .secure(true)
+                .sameSite("None")
+                .path("/")
+                .maxAge(0)
+                .build();
+
+        response.addHeader(HttpHeaders.SET_COOKIE, jwtCookie.toString());
+
+        apiResponse.setStatusCode(200L);
+        apiResponse.setMessage("Logout success !");
         apiResponse.setData(null);
         apiResponse.setTimestamp(LocalDateTime.now());
         return apiResponse;

@@ -12,7 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 public interface UserService {
-    APIResponse register(RegisterDTO registerDTO);
+    APIResponse register(RegisterDTO registerDTO, MultipartFile img) throws IOException;
     APIResponse login(LoginDTO loginDTO, HttpServletResponse response, HttpServletRequest request);
     APIResponse getUserByPage(int page, int size);
     APIResponse getUserById(Long id);
@@ -22,4 +22,5 @@ public interface UserService {
     APIResponse searchUser(String keyword, int page, int size);
     APIResponse sendOtpToEmail(String email) throws Exception;
     APIResponse verifyOtpAndChangePassword(ResetPasswordDTO resetPasswordDTO) throws Exception;
+    APIResponse logout(Long id, HttpServletResponse response);
 }

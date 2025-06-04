@@ -23,8 +23,9 @@ public class UsersController {
     private UserService userService;
 
     @PostMapping("/register")
-    public ResponseEntity<APIResponse> register(@RequestBody RegisterDTO registerDTO) {
-        return ResponseEntity.ok(userService.register(registerDTO));
+    public ResponseEntity<APIResponse> register(@RequestPart(name = "user") RegisterDTO registerDTO,
+                                                @RequestPart(name = "img", required = false) MultipartFile img) throws IOException {
+        return ResponseEntity.ok(userService.register(registerDTO, img));
     }
 
     @PostMapping("/login")
@@ -73,5 +74,10 @@ public class UsersController {
     @PostMapping("/reset-password")
     public ResponseEntity<APIResponse> resetPassword(@RequestBody ResetPasswordDTO resetPasswordDTO) throws Exception {
         return ResponseEntity.ok(userService.verifyOtpAndChangePassword(resetPasswordDTO));
+    }
+
+    @GetMapping("/logout/{id}")
+    public ResponseEntity<APIResponse> logout(@PathVariable Long id, HttpServletResponse response) throws Exception {
+        return ResponseEntity.ok(userService.logout(id,response));
     }
 }
