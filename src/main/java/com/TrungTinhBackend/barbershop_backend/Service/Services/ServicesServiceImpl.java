@@ -2,7 +2,6 @@ package com.TrungTinhBackend.barbershop_backend.Service.Services;
 
 import com.TrungTinhBackend.barbershop_backend.DTO.ServicesDTO;
 import com.TrungTinhBackend.barbershop_backend.Entity.Services;
-import com.TrungTinhBackend.barbershop_backend.Entity.Users;
 import com.TrungTinhBackend.barbershop_backend.Exception.NotFoundException;
 import com.TrungTinhBackend.barbershop_backend.Repository.ServicesRepository;
 import com.TrungTinhBackend.barbershop_backend.Response.APIResponse;

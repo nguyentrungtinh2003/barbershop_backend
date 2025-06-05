@@ -1,6 +1,5 @@
 package com.TrungTinhBackend.barbershop_backend.Controller;
 
-import com.TrungTinhBackend.barbershop_backend.DTO.RegisterDTO;
 import com.TrungTinhBackend.barbershop_backend.DTO.ServicesDTO;
 import com.TrungTinhBackend.barbershop_backend.Response.APIResponse;
 import com.TrungTinhBackend.barbershop_backend.Service.Services.ServicesService;
