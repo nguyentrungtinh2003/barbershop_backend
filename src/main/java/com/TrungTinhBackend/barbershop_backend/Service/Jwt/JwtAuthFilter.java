@@ -47,16 +47,16 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             return;
         }
 
-        String username = jwtUtils.extractUsername(jwtToken);
+        String phoneNumber = jwtUtils.extractUsername(jwtToken);
 
         Authentication existingAuth = SecurityContextHolder.getContext().getAuthentication();
-        if (username != null && !(existingAuth instanceof OAuth2AuthenticationToken)) {
+        if (phoneNumber != null && !(existingAuth instanceof OAuth2AuthenticationToken)) {
             if (existingAuth != null && existingAuth.isAuthenticated()) {
                 filterChain.doFilter(request, response);
                 return;
             }
 
-            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+            UserDetails userDetails = userDetailsService.loadUserByUsername(phoneNumber);
             List<GrantedAuthority> authorities = jwtUtils.extractRoles(jwtToken)
                     .stream()
                     .map(role -> new SimpleGrantedAuthority(role.getAuthority()))

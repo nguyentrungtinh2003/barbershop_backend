@@ -23,7 +23,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService{
     @Override
     public RefreshTokens createRefreshToken(String refreshToken, Users user) {
         // Tìm token hiện có
-        RefreshTokens optionalRefreshToken = refreshTokensRepository.findByUsers(user);
+        RefreshTokens optionalRefreshToken = refreshTokensRepository.findByUser(user);
         RefreshTokens tokenToSave;
 
         if (optionalRefreshToken != null) {

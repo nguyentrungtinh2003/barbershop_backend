@@ -1,7 +1,6 @@
 package com.TrungTinhBackend.barbershop_backend.Service.Search.Specification;
 
 import com.TrungTinhBackend.barbershop_backend.Entity.Services;
-import com.TrungTinhBackend.barbershop_backend.Entity.Users;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 

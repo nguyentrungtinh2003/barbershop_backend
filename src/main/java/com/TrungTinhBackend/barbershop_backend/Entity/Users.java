@@ -75,7 +75,7 @@ public class Users implements UserDetails {
 
     @Override
     public String getUsername() {
-        return username;
+        return phoneNumber;
     }
 
     @Override

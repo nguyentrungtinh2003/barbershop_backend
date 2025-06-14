@@ -67,24 +67,21 @@ public class UserServiceImpl implements UserService{
     public APIResponse register(RegisterDTO registerDTO, MultipartFile img) throws IOException {
         APIResponse apiResponse = new APIResponse();
 
-        Users user = usersRepository.findByEmail(registerDTO.getEmail());
+        Users user = usersRepository.findByPhoneNumber(registerDTO.getPhoneNumber());
         if(user != null) {
-            throw new RuntimeException("Email already exists !");
+            throw new RuntimeException("Phone Number already exists !");
         }
         Users user1 = new Users();
 
         user1.setUsername(registerDTO.getUsername());
         user1.setPassword(passwordEncoder.encode(registerDTO.getPassword()));
+        user1.setPhoneNumber(registerDTO.getPhoneNumber());
         user1.setEmail(registerDTO.getEmail());
 
         if(registerDTO.getRoleEnum() != null) {
             user1.setRoleEnum(registerDTO.getRoleEnum());
         }else {
             user1.setRoleEnum(RoleEnum.CUSTOMER);
-        }
-
-        if(registerDTO.getPhoneNumber() != null && !registerDTO.getPhoneNumber().isEmpty()) {
-            user1.setPhoneNumber(registerDTO.getPhoneNumber());
         }
 
         if(registerDTO.getAddress() != null && !registerDTO.getAddress().isEmpty()) {
@@ -124,13 +121,13 @@ public class UserServiceImpl implements UserService{
     public APIResponse login(LoginDTO loginDTO, HttpServletResponse response, HttpServletRequest request) {
         APIResponse apiResponse = new APIResponse();
 
-        Users user = usersRepository.findByUsername(loginDTO.getUsername());
+        Users user = usersRepository.findByPhoneNumber(loginDTO.getPhoneNumber());
         if (user == null) {
             throw new NotFoundException("User not found !");
         }
 
         authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword())
+                new UsernamePasswordAuthenticationToken(user.getPhoneNumber(), user.getPassword())
         );
 
         String jwt = jwtUtils.generateToken(user);
@@ -347,7 +344,7 @@ public class UserServiceImpl implements UserService{
                 () -> new NotFoundException("User not found !")
         );
 
-        RefreshTokens refreshTokens = refreshTokensRepository.findByUsers(user);
+        RefreshTokens refreshTokens = refreshTokensRepository.findByUser(user);
 
         if(refreshTokens != null) {
             refreshTokensRepository.delete(refreshTokens);

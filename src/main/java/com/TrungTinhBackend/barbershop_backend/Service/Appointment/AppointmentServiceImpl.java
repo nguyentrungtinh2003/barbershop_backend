@@ -2,7 +2,6 @@ package com.TrungTinhBackend.barbershop_backend.Service.Appointment;
 
 import com.TrungTinhBackend.barbershop_backend.DTO.AppointmentDTO;
 import com.TrungTinhBackend.barbershop_backend.Entity.Appointments;
-import com.TrungTinhBackend.barbershop_backend.Entity.Feedbacks;
 import com.TrungTinhBackend.barbershop_backend.Entity.Users;
 import com.TrungTinhBackend.barbershop_backend.Exception.NotFoundException;
 import com.TrungTinhBackend.barbershop_backend.Repository.AppointmentsRepository;
@@ -88,7 +87,40 @@ public class AppointmentServiceImpl implements AppointmentService{
 
     @Override
     public APIResponse updateAppointment(Long id, AppointmentDTO appointmentDTO) {
-        return null;
+        APIResponse apiResponse = new APIResponse();
+
+        Appointments appointment = appointmentsRepository.findById(id).orElseThrow(
+                () -> new NotFoundException("Appointment not found !")
+        );
+
+        Users customer = usersRepository.findById(appointmentDTO.getCustomer().getId()).orElseThrow(
+                () -> new NotFoundException("Customer not found !")
+        );
+
+        Users barber = usersRepository.findById(appointmentDTO.getBarber().getId()).orElseThrow(
+                () -> new NotFoundException("Barber not found !")
+        );
+
+        if(appointmentDTO.getAppointmentStatus() != null) {
+            appointment.setAppointmentStatus(appointmentDTO.getAppointmentStatus());
+        }
+
+        appointment.setCustomer(customer);
+        appointment.setBarber(barber);
+        appointment.setServices(null);
+        appointment.setPayments(null);
+        appointment.setPrice(appointmentDTO.getPrice());
+        appointment.setCreatedAt(LocalDateTime.now());
+        appointment.setUpdatedAt(null);
+
+        appointmentsRepository.save(appointment);
+
+
+        apiResponse.setStatusCode(200L);
+        apiResponse.setMessage("Delete appointment by id = "+id+" success");
+        apiResponse.setData(appointment);
+        apiResponse.setTimestamp(LocalDateTime.now());
+        return apiResponse;
     }
 
     @Override

@@ -9,5 +9,8 @@ import org.springframework.stereotype.Repository;
 public interface UsersRepository extends JpaRepository<Users,Long>, JpaSpecificationExecutor<Users> {
     Users findByUsernameAndIsDeleted(String username, boolean isDeleted);
     Users findByEmail(String email);
+    Users findByPhoneNumber(String phoneNumber);
     Users findByUsername(String username);
+
+    Users findByPhoneNumberAndIsDeleted(String phoneNumber, boolean b);
 }
