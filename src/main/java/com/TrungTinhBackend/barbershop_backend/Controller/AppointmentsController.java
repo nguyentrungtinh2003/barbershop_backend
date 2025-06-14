@@ -5,7 +5,6 @@ import com.TrungTinhBackend.barbershop_backend.Response.APIResponse;
 import com.TrungTinhBackend.barbershop_backend.Service.Appointment.AppointmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -31,6 +30,18 @@ public class AppointmentsController {
     @GetMapping("/{id}")
     public ResponseEntity<APIResponse> getAppointmentById(@PathVariable Long id) throws IOException {
         return ResponseEntity.ok(appointmentService.getAppointmentById(id));
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<APIResponse> searchAppointment(@RequestParam(name = "keyword") String keyword,
+                                                     @RequestParam(defaultValue = "0") int page,
+                                                     @RequestParam(defaultValue = "6") int size) throws IOException {
+        return ResponseEntity.ok(appointmentService.searchAppointment(keyword, page, size));
+    }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<APIResponse> updateAppointment(@PathVariable Long id,@RequestBody AppointmentDTO appointmentDTO) throws IOException {
+        return ResponseEntity.ok(appointmentService.updateAppointment(id,appointmentDTO));
     }
 
     @DeleteMapping("/delete/{id}")

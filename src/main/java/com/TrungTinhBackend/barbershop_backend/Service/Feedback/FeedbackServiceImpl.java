@@ -8,10 +8,12 @@ import com.TrungTinhBackend.barbershop_backend.Repository.FeedbacksRepository;
 import com.TrungTinhBackend.barbershop_backend.Repository.UsersRepository;
 import com.TrungTinhBackend.barbershop_backend.Response.APIResponse;
 import com.TrungTinhBackend.barbershop_backend.Service.Img.ImgService;
+import com.TrungTinhBackend.barbershop_backend.Service.Search.Specification.FeedbackSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -90,6 +92,22 @@ public class FeedbackServiceImpl implements FeedbackService{
         apiResponse.setStatusCode(200L);
         apiResponse.setMessage("Get feedback by id = "+id+" success");
         apiResponse.setData(feedback);
+        apiResponse.setTimestamp(LocalDateTime.now());
+        return apiResponse;
+    }
+
+    @Override
+    public APIResponse searchFeedback(String keyword, int page, int size) {
+        APIResponse apiResponse = new APIResponse();
+
+        Pageable pageable = PageRequest.of(page,size);
+        Specification<Feedbacks> specification = FeedbackSpecification.searchByKeyword(keyword);
+
+        Page<Feedbacks> feedbacks = feedbacksRepository.findAll(specification,pageable);
+
+        apiResponse.setStatusCode(200L);
+        apiResponse.setMessage("Search feedback by keyword = "+keyword+" success");
+        apiResponse.setData(feedbacks);
         apiResponse.setTimestamp(LocalDateTime.now());
         return apiResponse;
     }

@@ -10,6 +10,7 @@ public interface FeedbackService {
     APIResponse addFeedback(FeedbackDTO feedbackDTO, MultipartFile img) throws IOException;
     APIResponse getFeedbackByPage(int page, int size);
     APIResponse getFeedbackById(Long id);
+    APIResponse searchFeedback(String keyword, int page, int size);
     APIResponse updateFeedback(Long id, FeedbackDTO feedbackDTO, MultipartFile img) throws IOException;
     APIResponse deleteFeedback(Long id);
 }

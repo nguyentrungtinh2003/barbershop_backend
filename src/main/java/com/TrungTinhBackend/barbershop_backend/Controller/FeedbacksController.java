@@ -1,7 +1,6 @@
 package com.TrungTinhBackend.barbershop_backend.Controller;
 
 import com.TrungTinhBackend.barbershop_backend.DTO.FeedbackDTO;
-import com.TrungTinhBackend.barbershop_backend.DTO.ServicesDTO;
 import com.TrungTinhBackend.barbershop_backend.Response.APIResponse;
 import com.TrungTinhBackend.barbershop_backend.Service.Feedback.FeedbackService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +32,13 @@ public class FeedbacksController {
     @GetMapping("/{id}")
     public ResponseEntity<APIResponse> getFeedbackById(@PathVariable Long id) throws IOException {
         return ResponseEntity.ok(feedbackService.getFeedbackById(id));
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<APIResponse> searchFeedback(@RequestParam(name = "keyword") String keyword,
+                                                     @RequestParam(defaultValue = "0") int page,
+                                                     @RequestParam(defaultValue = "6") int size) throws IOException {
+        return ResponseEntity.ok(feedbackService.searchFeedback(keyword, page, size));
     }
 
     @PutMapping("/update/{id}")

@@ -7,10 +7,12 @@ import com.TrungTinhBackend.barbershop_backend.Exception.NotFoundException;
 import com.TrungTinhBackend.barbershop_backend.Repository.AppointmentsRepository;
 import com.TrungTinhBackend.barbershop_backend.Repository.UsersRepository;
 import com.TrungTinhBackend.barbershop_backend.Response.APIResponse;
+import com.TrungTinhBackend.barbershop_backend.Service.Search.Specification.AppointmentSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -86,6 +88,22 @@ public class AppointmentServiceImpl implements AppointmentService{
     }
 
     @Override
+    public APIResponse searchAppointment(String keyword, int page, int size) {
+        APIResponse apiResponse = new APIResponse();
+
+        Pageable pageable = PageRequest.of(page,size);
+        Specification<Appointments> specification = AppointmentSpecification.searchByKeyword(keyword);
+
+        Page<Appointments> appointments = appointmentsRepository.findAll(specification,pageable);
+
+        apiResponse.setStatusCode(200L);
+        apiResponse.setMessage("Search appointment by keyword = "+keyword+" success");
+        apiResponse.setData(appointments);
+        apiResponse.setTimestamp(LocalDateTime.now());
+        return apiResponse;
+    }
+
+    @Override
     public APIResponse updateAppointment(Long id, AppointmentDTO appointmentDTO) {
         APIResponse apiResponse = new APIResponse();
 
@@ -105,19 +123,33 @@ public class AppointmentServiceImpl implements AppointmentService{
             appointment.setAppointmentStatus(appointmentDTO.getAppointmentStatus());
         }
 
-        appointment.setCustomer(customer);
-        appointment.setBarber(barber);
-        appointment.setServices(null);
-        appointment.setPayments(null);
-        appointment.setPrice(appointmentDTO.getPrice());
-        appointment.setCreatedAt(LocalDateTime.now());
-        appointment.setUpdatedAt(null);
+        if(appointmentDTO.getCustomer() != null) {
+            appointment.setCustomer(customer);
+        }
+
+        if(appointmentDTO.getBarber() != null) {
+            appointment.setBarber(barber);
+        }
+
+        if(appointmentDTO.getServices() != null) {
+            appointment.setServices(null);
+        }
+
+        if(appointmentDTO.getPayments() != null) {
+            appointment.setPayments(null);
+        }
+
+        if(appointmentDTO.getPrice() != null) {
+            appointment.setPrice(appointmentDTO.getPrice());
+        }
+
+        appointment.setUpdatedAt(LocalDateTime.now());
 
         appointmentsRepository.save(appointment);
 
 
         apiResponse.setStatusCode(200L);
-        apiResponse.setMessage("Delete appointment by id = "+id+" success");
+        apiResponse.setMessage("Update appointment by id = "+id+" success");
         apiResponse.setData(appointment);
         apiResponse.setTimestamp(LocalDateTime.now());
         return apiResponse;
