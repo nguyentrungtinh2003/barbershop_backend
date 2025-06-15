@@ -69,17 +69,17 @@ public class SecurityConfig {
                 .authorizeHttpRequests(request -> request
 
                         // Thêm các đường dẫn Swagger UI và tài liệu API để không bị chặn
-                        .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**", "/oauth2/**",             // 👈 Cho phép truy cập OAuth2 endpoint
+                        .requestMatchers("/api/login","/api/register","/api/forgot-password","/api/reset-password","/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**", "/oauth2/**",             // 👈 Cho phép truy cập OAuth2 endpoint
                                 "/login/oauth2/**", "/robots.txt", "/api/ws/**",  "/api/user-google" ).permitAll()
                         // Các API cần quyền truy cập
                         .requestMatchers("/api/admin/**").hasAuthority("ROLE_ADMIN")
-                        .requestMatchers("/api/teacher/**").hasAnyAuthority("ROLE_TEACHER", "ROLE_ADMIN")
-                        .requestMatchers("/api/student/**").hasAnyAuthority("ROLE_STUDENT","ROLE_TEACHER","ROLE_ADMIN")
+                        .requestMatchers("/api/owner/**").hasAnyAuthority("ROLE_OWNER", "ROLE_ADMIN")
+                        .requestMatchers("/api/barber/**").hasAnyAuthority("ROLE_BARBER","ROLE_OWNER","ROLE_ADMIN")
+                        .requestMatchers("/api/customer/**").hasAnyAuthority("ROLE_CUSTOMER","ROLE_BARBER","ROLE_OWNER","ROLE_ADMIN")
                         .requestMatchers("/error").permitAll()
-                        .requestMatchers("/api/**").permitAll()
 
                         // Các yêu cầu khác không yêu cầu xác thực
-                        .anyRequest().permitAll()
+                        .anyRequest().authenticated()
                 )
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint((request, response, authException) -> {

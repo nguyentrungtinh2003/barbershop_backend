@@ -15,8 +15,8 @@ public class CorsConfig {
                 System.out.println("CORS Config Loaded");
                 registry.addMapping("/**")
                         .allowedOrigins(
-                                "http://localhost:3000",
-                                "https://codearena-frontend-dev.vercel.app"
+                                "http://localhost:5173",
+                                "https://localhost:3000"
                         )
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("Authorization", "Content-Type", "Cookie")

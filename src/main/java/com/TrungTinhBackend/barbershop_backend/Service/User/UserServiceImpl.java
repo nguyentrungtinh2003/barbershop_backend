@@ -95,7 +95,7 @@ public class UserServiceImpl implements UserService{
         if(registerDTO.getDescription() != null && !registerDTO.getDescription().isEmpty()) {
             user1.setDescription(registerDTO.getDescription());
         }
-
+        user1.setCreatedAt(LocalDateTime.now());
         user1.setDeleted(false);
 
         usersRepository.save(user1);
@@ -127,7 +127,7 @@ public class UserServiceImpl implements UserService{
         }
 
         authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(user.getPhoneNumber(), user.getPassword())
+                new UsernamePasswordAuthenticationToken(loginDTO.getPhoneNumber(), loginDTO.getPassword())
         );
 
         String jwt = jwtUtils.generateToken(user);

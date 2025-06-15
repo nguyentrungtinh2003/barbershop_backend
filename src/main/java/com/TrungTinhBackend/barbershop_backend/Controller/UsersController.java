@@ -16,7 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/api")
 public class UsersController {
 
     @Autowired
@@ -33,33 +33,33 @@ public class UsersController {
         return ResponseEntity.ok(userService.login(loginDTO, response, request));
     }
 
-    @PostMapping("/page")
+    @PostMapping("customer/page")
     public ResponseEntity<APIResponse> getUsersByPage(@RequestParam(defaultValue = "0") int page,
                                                       @RequestParam(defaultValue = "6") int size) {
         return ResponseEntity.ok(userService.getUserByPage(page,size));
     }
 
-    @PostMapping("/{id}")
+    @PostMapping("customer/{id}")
     public ResponseEntity<APIResponse> getUserById(@PathVariable Long id) {
         return ResponseEntity.ok(userService.getUserById(id));
     }
 
-    @PutMapping("/update/{id}")
+    @PutMapping("customer/update/{id}")
     public ResponseEntity<APIResponse> updateUser(@PathVariable Long id, @RequestPart(name = "user") UserDTO userDTO, @RequestPart(name = "img",required = false) MultipartFile img) throws IOException {
         return ResponseEntity.ok(userService.updateUser(id, userDTO, img));
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("customer/delete/{id}")
     public ResponseEntity<APIResponse> deleteUser(@PathVariable Long id) throws IOException {
         return ResponseEntity.ok(userService.deleteUser(id));
     }
 
-    @PutMapping("/restore/{id}")
+    @PutMapping("customer/restore/{id}")
     public ResponseEntity<APIResponse> restoreUser(@PathVariable Long id) throws IOException {
         return ResponseEntity.ok(userService.restoreUser(id));
     }
 
-    @GetMapping("/search")
+    @GetMapping("customer/search")
     public ResponseEntity<APIResponse> searchUser(@RequestParam(name = "keyword") String keyword,
                                                   @RequestParam(defaultValue = "0") int page,
                                                   @RequestParam(defaultValue = "6") int size) throws IOException {
