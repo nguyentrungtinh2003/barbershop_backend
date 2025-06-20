@@ -28,4 +28,5 @@ public class UserDTO {
     private RoleEnum roleEnum;
 
     private String description;
+
 }

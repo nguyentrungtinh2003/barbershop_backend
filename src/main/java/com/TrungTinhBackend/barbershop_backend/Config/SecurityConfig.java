@@ -75,10 +75,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/admin/**").hasAuthority("ROLE_ADMIN")
                         .requestMatchers("/api/owner/**").hasAnyAuthority("ROLE_OWNER", "ROLE_ADMIN")
                         .requestMatchers("/api/barber/**").hasAnyAuthority("ROLE_BARBER","ROLE_OWNER","ROLE_ADMIN")
-                        .requestMatchers("/api/customer/**").hasAnyAuthority("ROLE_CUSTOMER","ROLE_BARBER","ROLE_OWNER","ROLE_ADMIN")
                         .requestMatchers("/error").permitAll()
 
-                        // Các yêu cầu khác không yêu cầu xác thực
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(exception -> exception

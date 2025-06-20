@@ -25,16 +25,16 @@ public class UserDetailsService implements org.springframework.security.core.use
 
     @Override
     @Transactional
-    public UserDetails loadUserByUsername(String phoneNumber) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        Users user = usersRepository.findByPhoneNumberAndIsDeleted(phoneNumber,false);
+        Users user = usersRepository.findByUsernameAndIsDeleted(username,false);
 
         if(user == null) {
             throw new NotFoundException("User not found !");
         }
 
         return new org.springframework.security.core.userdetails.User(
-                user.getPhoneNumber(),
+                user.getUsername(),
                 user.getPassword(),
                 Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + user.getRoleEnum().name()))
         );

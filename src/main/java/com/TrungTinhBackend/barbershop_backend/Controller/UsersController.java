@@ -33,33 +33,33 @@ public class UsersController {
         return ResponseEntity.ok(userService.login(loginDTO, response, request));
     }
 
-    @PostMapping("customer/page")
+    @GetMapping("/admin/users/page")
     public ResponseEntity<APIResponse> getUsersByPage(@RequestParam(defaultValue = "0") int page,
                                                       @RequestParam(defaultValue = "6") int size) {
         return ResponseEntity.ok(userService.getUserByPage(page,size));
     }
 
-    @PostMapping("customer/{id}")
+    @GetMapping("/users/{id}")
     public ResponseEntity<APIResponse> getUserById(@PathVariable Long id) {
         return ResponseEntity.ok(userService.getUserById(id));
     }
 
-    @PutMapping("customer/update/{id}")
+    @PutMapping("/owner/users/update/{id}")
     public ResponseEntity<APIResponse> updateUser(@PathVariable Long id, @RequestPart(name = "user") UserDTO userDTO, @RequestPart(name = "img",required = false) MultipartFile img) throws IOException {
         return ResponseEntity.ok(userService.updateUser(id, userDTO, img));
     }
 
-    @DeleteMapping("customer/delete/{id}")
+    @DeleteMapping("/owner/users/delete/{id}")
     public ResponseEntity<APIResponse> deleteUser(@PathVariable Long id) throws IOException {
         return ResponseEntity.ok(userService.deleteUser(id));
     }
 
-    @PutMapping("customer/restore/{id}")
+    @PutMapping("/owner/users/restore/{id}")
     public ResponseEntity<APIResponse> restoreUser(@PathVariable Long id) throws IOException {
         return ResponseEntity.ok(userService.restoreUser(id));
     }
 
-    @GetMapping("customer/search")
+    @GetMapping("/owner/users/search")
     public ResponseEntity<APIResponse> searchUser(@RequestParam(name = "keyword") String keyword,
                                                   @RequestParam(defaultValue = "0") int page,
                                                   @RequestParam(defaultValue = "6") int size) throws IOException {

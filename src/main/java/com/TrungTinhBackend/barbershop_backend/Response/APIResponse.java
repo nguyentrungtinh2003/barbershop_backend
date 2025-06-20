@@ -10,5 +10,6 @@ public class APIResponse {
     private Long statusCode;
     private String message;
     private Object data;
+    private String token;
     private LocalDateTime timestamp;
 }

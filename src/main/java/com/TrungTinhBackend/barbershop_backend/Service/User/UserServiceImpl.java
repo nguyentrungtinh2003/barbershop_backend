@@ -121,32 +121,23 @@ public class UserServiceImpl implements UserService{
     public APIResponse login(LoginDTO loginDTO, HttpServletResponse response, HttpServletRequest request) {
         APIResponse apiResponse = new APIResponse();
 
-        Users user = usersRepository.findByPhoneNumber(loginDTO.getPhoneNumber());
+        Users user = usersRepository.findByUsername(loginDTO.getUsername());
         if (user == null) {
             throw new NotFoundException("User not found !");
         }
 
         authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginDTO.getPhoneNumber(), loginDTO.getPassword())
+                new UsernamePasswordAuthenticationToken(loginDTO.getUsername(), loginDTO.getPassword())
         );
 
         String jwt = jwtUtils.generateToken(user);
         String refreshToken = jwtUtils.generateRefreshToken(new HashMap<>(), user);
         refreshTokenService.createRefreshToken(refreshToken, user);
 
-        ResponseCookie jwtCookie = ResponseCookie.from("authToken", jwt)
-                .httpOnly(true)
-                .secure(true)
-                .sameSite("None")
-                .path("/")         // PHẢI giống với logout
-                .maxAge(7 * 24 * 60 * 60) // 7 ngày
-                .build();
-
-        response.addHeader(HttpHeaders.SET_COOKIE, jwtCookie.toString());
-
         apiResponse.setStatusCode(200L);
         apiResponse.setMessage("Login success");
         apiResponse.setData(user);
+        apiResponse.setToken(jwt);
         apiResponse.setTimestamp(LocalDateTime.now());
         return apiResponse;
     }
