@@ -51,4 +51,12 @@ public class Shops {
             inverseJoinColumns = @JoinColumn(name = "barber_id")
     )
     private Set<Users> barbers;
+
+    @ManyToMany
+    @JoinTable(
+            name = "shop_service",
+            joinColumns = @JoinColumn(name = "shop_id"),
+            inverseJoinColumns = @JoinColumn(name = "service_id")
+    )
+    private Set<Services> services;
 }

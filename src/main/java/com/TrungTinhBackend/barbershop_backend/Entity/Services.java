@@ -8,6 +8,7 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -38,4 +39,7 @@ public class Services {
 
     @ManyToMany(mappedBy = "services")
     private List<Appointments> appointments;
+
+    @ManyToMany(mappedBy = "services")
+    private Set<Shops> shops;
 }
