@@ -44,7 +44,7 @@ public class Shops {
     @JoinColumn(name = "owner_id")
     private Users owner;
 
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.PERSIST,CascadeType.MERGE})
     @JoinTable(
             name = "shop_barber",
             joinColumns = @JoinColumn(name = "shop_id"),
@@ -52,7 +52,7 @@ public class Shops {
     )
     private Set<Users> barbers;
 
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.PERSIST,CascadeType.MERGE})
     @JoinTable(
             name = "shop_service",
             joinColumns = @JoinColumn(name = "shop_id"),

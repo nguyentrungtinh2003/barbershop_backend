@@ -1,6 +1,7 @@
 package com.TrungTinhBackend.barbershop_backend.Entity;
 
 import com.TrungTinhBackend.barbershop_backend.Enum.RoleEnum;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -71,9 +72,11 @@ public class Users implements UserDetails {
 
     //
     @OneToMany(mappedBy = "owner")
+    @JsonIgnore
     private List<Shops> shop;
 
     @ManyToMany(mappedBy = "barbers")
+    @JsonIgnore
     private Set<Shops> shops;
 
     @Override

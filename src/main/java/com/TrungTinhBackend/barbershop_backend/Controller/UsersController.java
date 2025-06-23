@@ -33,6 +33,11 @@ public class UsersController {
         return ResponseEntity.ok(userService.login(loginDTO, response, request));
     }
 
+    @GetMapping("/owner/users/all")
+    public ResponseEntity<APIResponse> getAllUsers() {
+        return ResponseEntity.ok(userService.getAllUser());
+    }
+
     @GetMapping("/admin/users/page")
     public ResponseEntity<APIResponse> getUsersByPage(@RequestParam(defaultValue = "0") int page,
                                                       @RequestParam(defaultValue = "6") int size) {

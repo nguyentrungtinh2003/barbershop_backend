@@ -3,6 +3,8 @@ package com.TrungTinhBackend.barbershop_backend.DTO;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Set;
 
 @Data
 public class ShopDTO {
@@ -28,4 +30,12 @@ public class ShopDTO {
     private LocalDate updateAt;
 
     private boolean isDeleted;
+
+    private Long ownerId;
+
+    private String ownerName;
+
+    private String ownerImg;
+
+    private Set<Long> barbers;
 }

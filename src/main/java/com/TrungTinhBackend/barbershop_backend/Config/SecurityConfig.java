@@ -77,7 +77,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/barber/**").hasAnyAuthority("ROLE_BARBER","ROLE_OWNER","ROLE_ADMIN")
                         .requestMatchers("/error").permitAll()
 
-                        .anyRequest().authenticated()
+                    .anyRequest().authenticated()
                 )
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint((request, response, authException) -> {

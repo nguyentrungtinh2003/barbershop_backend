@@ -34,6 +34,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
 
 @Service
@@ -138,6 +139,19 @@ public class UserServiceImpl implements UserService{
         apiResponse.setMessage("Login success");
         apiResponse.setData(user);
         apiResponse.setToken(jwt);
+        apiResponse.setTimestamp(LocalDateTime.now());
+        return apiResponse;
+    }
+
+    @Override
+    public APIResponse getAllUser() {
+        APIResponse apiResponse = new APIResponse();
+
+        List<Users> users = usersRepository.findAll();
+
+        apiResponse.setStatusCode(200L);
+        apiResponse.setMessage("Get all users success");
+        apiResponse.setData(users);
         apiResponse.setTimestamp(LocalDateTime.now());
         return apiResponse;
     }
