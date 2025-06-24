@@ -1,5 +1,6 @@
 package com.TrungTinhBackend.barbershop_backend.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -38,8 +39,10 @@ public class Services {
     private boolean isDeleted;
 
     @ManyToMany(mappedBy = "services")
+    @JsonIgnore
     private List<Appointments> appointments;
 
     @ManyToMany(mappedBy = "services")
+    @JsonIgnore
     private Set<Shops> shops;
 }

@@ -2,9 +2,11 @@ package com.TrungTinhBackend.barbershop_backend.Service.Appointment;
 
 import com.TrungTinhBackend.barbershop_backend.DTO.AppointmentDTO;
 import com.TrungTinhBackend.barbershop_backend.Entity.Appointments;
+import com.TrungTinhBackend.barbershop_backend.Entity.Services;
 import com.TrungTinhBackend.barbershop_backend.Entity.Users;
 import com.TrungTinhBackend.barbershop_backend.Exception.NotFoundException;
 import com.TrungTinhBackend.barbershop_backend.Repository.AppointmentsRepository;
+import com.TrungTinhBackend.barbershop_backend.Repository.ServicesRepository;
 import com.TrungTinhBackend.barbershop_backend.Repository.UsersRepository;
 import com.TrungTinhBackend.barbershop_backend.Response.APIResponse;
 import com.TrungTinhBackend.barbershop_backend.Service.Search.Specification.AppointmentSpecification;
@@ -16,6 +18,11 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class AppointmentServiceImpl implements AppointmentService{
@@ -25,6 +32,9 @@ public class AppointmentServiceImpl implements AppointmentService{
 
     @Autowired
     private UsersRepository usersRepository;
+
+    @Autowired
+    private ServicesRepository servicesRepository;
 
     @Override
     public APIResponse addAppointment(AppointmentDTO appointmentDTO) {
@@ -38,12 +48,23 @@ public class AppointmentServiceImpl implements AppointmentService{
                 () -> new NotFoundException("Barber not found !")
         );
 
+        List<Long> serviceIds = appointmentDTO.getServices()
+                .stream()
+                .map(Services::getId)
+                .collect(Collectors.toList());
+
+        List<Services> services = new ArrayList<>(servicesRepository.findAllById(serviceIds));
+
+        if (services.isEmpty()) {
+            throw new NotFoundException("Không tìm thấy dịch vụ nào!");
+        }
+
 
         Appointments appointment = new Appointments();
         appointment.setAppointmentStatus(appointmentDTO.getAppointmentStatus());
         appointment.setCustomer(customer);
         appointment.setBarber(barber);
-        appointment.setServices(null);
+        appointment.setServices(services);
         appointment.setPayments(null);
         appointment.setPrice(appointmentDTO.getPrice());
         appointment.setCreatedAt(LocalDateTime.now());

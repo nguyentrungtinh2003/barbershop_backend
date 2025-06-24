@@ -2,8 +2,10 @@ package com.TrungTinhBackend.barbershop_backend.Service.Services;
 
 import com.TrungTinhBackend.barbershop_backend.DTO.ServicesDTO;
 import com.TrungTinhBackend.barbershop_backend.Entity.Services;
+import com.TrungTinhBackend.barbershop_backend.Entity.Shops;
 import com.TrungTinhBackend.barbershop_backend.Exception.NotFoundException;
 import com.TrungTinhBackend.barbershop_backend.Repository.ServicesRepository;
+import com.TrungTinhBackend.barbershop_backend.Repository.ShopsRepository;
 import com.TrungTinhBackend.barbershop_backend.Response.APIResponse;
 import com.TrungTinhBackend.barbershop_backend.Service.Img.ImgService;
 import com.TrungTinhBackend.barbershop_backend.Service.Search.Specification.ServiceSpecification;
@@ -26,11 +28,18 @@ public class ServicesServiceImpl implements ServicesService{
     private ServicesRepository servicesRepository;
 
     @Autowired
+    private ShopsRepository shopsRepository;
+
+    @Autowired
     private ImgService imgService;
 
     @Override
     public APIResponse addServices(ServicesDTO servicesDTO, MultipartFile img) throws IOException {
         APIResponse apiResponse = new APIResponse();
+
+        Shops shop = shopsRepository.findById(servicesDTO.getShopId()).orElseThrow(
+                () -> new NotFoundException("Shop not found")
+        );
 
         Services service = new Services();
 
@@ -39,6 +48,7 @@ public class ServicesServiceImpl implements ServicesService{
         service.setDuration(servicesDTO.getDuration());
         service.setPrice(servicesDTO.getPrice());
         service.setDeleted(false);
+        service.getShops().add(shop);
 
         if(img != null) {
             service.setImg(imgService.uploadImg(img));
@@ -114,8 +124,15 @@ public class ServicesServiceImpl implements ServicesService{
             service.setImg(imgService.updateImg(service.getImg(),img));
         }
 
+        if(servicesDTO.getShopId() != null) {
+            Shops shop = shopsRepository.findById(servicesDTO.getShopId()).orElseThrow(
+                    () -> new NotFoundException("Shop not found")
+            );
+            service.getShops().add(shop);
+            shop.getServices().add(service);
+        }
+
         service.setUpdatedAt(LocalDateTime.now());
-//        service.setAppointments(new ArrayList<>());
 
         servicesRepository.save(service);
 

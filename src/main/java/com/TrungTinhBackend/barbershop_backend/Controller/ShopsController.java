@@ -29,7 +29,12 @@ public class ShopsController {
         return ResponseEntity.ok(shopService.getShopByPage(page, size));
     }
 
-    @GetMapping("/owner/shops/{id}")
+    @GetMapping("/shops/all")
+    public ResponseEntity<APIResponse> getAllShop() throws IOException {
+        return ResponseEntity.ok(shopService.getAllShop());
+    }
+
+    @GetMapping("/shops/{id}")
     public ResponseEntity<APIResponse> getShopById(@PathVariable Long id) throws IOException {
         return ResponseEntity.ok(shopService.getShopById(id));
     }

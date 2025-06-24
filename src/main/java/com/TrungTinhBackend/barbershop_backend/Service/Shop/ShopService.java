@@ -9,6 +9,7 @@ import java.io.IOException;
 public interface ShopService {
     APIResponse addShop(ShopDTO shopDTO, MultipartFile img) throws IOException;
     APIResponse getShopByPage(int page, int size);
+    APIResponse getAllShop();
     APIResponse getShopById(Long id);
     APIResponse getShopByOwnerId(Long ownerId);
     APIResponse updateShop(Long id, ShopDTO shopDTO, MultipartFile img) throws IOException;

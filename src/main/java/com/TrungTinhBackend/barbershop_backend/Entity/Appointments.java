@@ -23,6 +23,10 @@ public class Appointments {
 
     private LocalDateTime date;
 
+    private Long startTime;
+
+    private Long endTime;
+
     private AppointmentStatus appointmentStatus;
 
     private Double price;

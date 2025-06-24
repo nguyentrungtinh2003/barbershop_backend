@@ -25,6 +25,8 @@ public class ServicesDTO {
 
     private Integer duration;
 
+    private Long shopId;
+
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;

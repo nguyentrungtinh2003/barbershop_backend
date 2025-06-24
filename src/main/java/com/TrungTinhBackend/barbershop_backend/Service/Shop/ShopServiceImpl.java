@@ -82,6 +82,19 @@ public class ShopServiceImpl implements ShopService{
     }
 
     @Override
+    public APIResponse getAllShop() {
+        APIResponse apiResponse = new APIResponse();
+
+        List<Shops> shops = shopsRepository.findAll();
+
+        apiResponse.setStatusCode(200L);
+        apiResponse.setMessage("Get all shop success");
+        apiResponse.setData(shops);
+        apiResponse.setTimestamp(LocalDateTime.now());
+        return apiResponse;
+    }
+
+    @Override
     public APIResponse getShopById(Long id) {
         APIResponse apiResponse = new APIResponse();
 
