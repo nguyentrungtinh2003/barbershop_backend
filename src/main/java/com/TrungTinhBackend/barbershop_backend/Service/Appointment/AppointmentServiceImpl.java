@@ -3,10 +3,12 @@ package com.TrungTinhBackend.barbershop_backend.Service.Appointment;
 import com.TrungTinhBackend.barbershop_backend.DTO.AppointmentDTO;
 import com.TrungTinhBackend.barbershop_backend.Entity.Appointments;
 import com.TrungTinhBackend.barbershop_backend.Entity.Services;
+import com.TrungTinhBackend.barbershop_backend.Entity.Shops;
 import com.TrungTinhBackend.barbershop_backend.Entity.Users;
 import com.TrungTinhBackend.barbershop_backend.Exception.NotFoundException;
 import com.TrungTinhBackend.barbershop_backend.Repository.AppointmentsRepository;
 import com.TrungTinhBackend.barbershop_backend.Repository.ServicesRepository;
+import com.TrungTinhBackend.barbershop_backend.Repository.ShopsRepository;
 import com.TrungTinhBackend.barbershop_backend.Repository.UsersRepository;
 import com.TrungTinhBackend.barbershop_backend.Response.APIResponse;
 import com.TrungTinhBackend.barbershop_backend.Service.Search.Specification.AppointmentSpecification;
@@ -17,7 +19,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -36,48 +40,64 @@ public class AppointmentServiceImpl implements AppointmentService{
     @Autowired
     private ServicesRepository servicesRepository;
 
+    @Autowired
+    private ShopsRepository shopsRepository;
+
     @Override
     public APIResponse addAppointment(AppointmentDTO appointmentDTO) {
         APIResponse apiResponse = new APIResponse();
 
-        Users customer = usersRepository.findById(appointmentDTO.getCustomer().getId()).orElseThrow(
-                () -> new NotFoundException("Customer not found !")
-        );
+        Users customer = usersRepository.findById(appointmentDTO.getCustomer().getId())
+                .orElseThrow(() -> new NotFoundException("Customer not found !"));
 
-        Users barber = usersRepository.findById(appointmentDTO.getBarber().getId()).orElseThrow(
-                () -> new NotFoundException("Barber not found !")
-        );
+        Users barber = usersRepository.findById(appointmentDTO.getBarber().getId())
+                .orElseThrow(() -> new NotFoundException("Barber not found !"));
 
-        List<Long> serviceIds = appointmentDTO.getServices()
-                .stream()
+        Shops shop = shopsRepository.findById(appointmentDTO.getShop().getId())
+                .orElseThrow(() -> new NotFoundException("Shop not found !"));
+
+        List<Long> serviceIds = appointmentDTO.getServices().stream()
                 .map(Services::getId)
                 .collect(Collectors.toList());
 
-        List<Services> services = new ArrayList<>(servicesRepository.findAllById(serviceIds));
+        List<Services> services = servicesRepository.findAllById(serviceIds);
 
         if (services.isEmpty()) {
             throw new NotFoundException("Không tìm thấy dịch vụ nào!");
         }
 
+        // Tính thời gian bắt đầu và kết thúc
+        LocalDate date = appointmentDTO.getDate();// giả sử đã sửa thành LocalDate
+        LocalTime time = LocalTime.parse(appointmentDTO.getTimeSlot()); // ví dụ "10:00"
+        LocalDateTime startTime = LocalDateTime.of(date, time);
+        long totalDuration = services.stream().mapToLong(Services::getDuration).sum();
+        LocalDateTime endTime = startTime.plusMinutes(totalDuration);
 
+        // Tạo appointment
         Appointments appointment = new Appointments();
         appointment.setAppointmentStatus(appointmentDTO.getAppointmentStatus());
         appointment.setCustomer(customer);
         appointment.setBarber(barber);
         appointment.setServices(services);
+        appointment.setShop(shop);
         appointment.setPayments(null);
         appointment.setPrice(appointmentDTO.getPrice());
         appointment.setCreatedAt(LocalDateTime.now());
         appointment.setUpdatedAt(null);
+        appointment.setStartTime(startTime);
+        appointment.setEndTime(endTime);
+        appointment.setDate(date);
 
         appointmentsRepository.save(appointment);
 
+        // Trả về
         apiResponse.setStatusCode(200L);
         apiResponse.setMessage("Add appointment success");
         apiResponse.setData(appointment);
         apiResponse.setTimestamp(LocalDateTime.now());
         return apiResponse;
     }
+
 
     @Override
     public APIResponse getAppointmentByPage(int page, int size) {

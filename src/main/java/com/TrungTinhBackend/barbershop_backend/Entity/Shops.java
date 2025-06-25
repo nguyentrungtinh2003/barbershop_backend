@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -59,4 +60,7 @@ public class Shops {
             inverseJoinColumns = @JoinColumn(name = "service_id")
     )
     private Set<Services> services;
+
+    @OneToMany(mappedBy = "shop")
+    private List<Appointments> appointments;
 }

@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -21,11 +22,11 @@ public class Appointments {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private LocalDateTime date;
+    private LocalDate date;
 
-    private Long startTime;
+    private LocalDateTime startTime;
 
-    private Long endTime;
+    private LocalDateTime endTime;
 
     private AppointmentStatus appointmentStatus;
 
@@ -48,6 +49,10 @@ public class Appointments {
 
     @OneToOne(mappedBy = "appointments", cascade = CascadeType.ALL)
     private Payments payments;
+
+    @ManyToOne()
+    @JoinColumn(name = "shop_id")
+    private Shops shop;
 
     private LocalDateTime createdAt;
 
