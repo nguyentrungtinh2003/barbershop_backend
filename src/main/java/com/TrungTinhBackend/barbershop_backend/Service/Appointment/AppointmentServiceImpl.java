@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -98,6 +99,23 @@ public class AppointmentServiceImpl implements AppointmentService{
         return apiResponse;
     }
 
+    @Override
+    public APIResponse getAvailableTimeSlots(Long shopId, Long barberId,LocalDate date) {
+        APIResponse apiResponse = new APIResponse();
+
+        LocalDateTime startTime = date.atStartOfDay();
+        LocalDateTime endTime = date.atTime(23, 59);
+
+        List<Appointments> appointments = appointmentsRepository.findByShopIdAndBarberIdAndStartTimeBetween(shopId,barberId,startTime, endTime);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+        List<String> availableTimeSlot = appointments.stream().map(appoint -> appoint.getStartTime().format(formatter)).toList();
+
+        apiResponse.setStatusCode(200L);
+        apiResponse.setMessage("Get appointment available timeslot success");
+        apiResponse.setData(availableTimeSlot);
+        apiResponse.setTimestamp(LocalDateTime.now());
+        return apiResponse;
+    }
 
     @Override
     public APIResponse getAppointmentByPage(int page, int size) {

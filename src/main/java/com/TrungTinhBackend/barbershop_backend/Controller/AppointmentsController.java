@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.time.LocalDate;
 
 @RestController
 @RequestMapping("api/appointments")
@@ -19,6 +20,13 @@ public class AppointmentsController {
     @PostMapping("/add")
     public ResponseEntity<APIResponse> addAppointment(@RequestBody AppointmentDTO appointmentDTO) throws IOException {
         return ResponseEntity.ok(appointmentService.addAppointment(appointmentDTO));
+    }
+
+    @GetMapping("/time-slot")
+    public ResponseEntity<APIResponse> getAppointmentTimeSlot(@RequestParam() Long shopId,
+                                                              @RequestParam() Long barberId,
+                                                              @RequestParam() LocalDate date) throws IOException {
+        return ResponseEntity.ok(appointmentService.getAvailableTimeSlots(shopId,barberId,date));
     }
 
     @GetMapping("/page")
