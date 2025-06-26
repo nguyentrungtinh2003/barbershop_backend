@@ -10,6 +10,7 @@ public interface AppointmentService {
     APIResponse getAvailableTimeSlots(Long shopId, Long barberId,LocalDate date);
     APIResponse getAppointmentByPage(int page, int size);
     APIResponse getAppointmentById(Long id);
+    APIResponse getAppointmentByCustomerId(Long customerId);
     APIResponse searchAppointment(String keyword, int page, int size);
     APIResponse updateAppointment(Long id, AppointmentDTO appointmentDTO);
     APIResponse deleteAppointment(Long id);

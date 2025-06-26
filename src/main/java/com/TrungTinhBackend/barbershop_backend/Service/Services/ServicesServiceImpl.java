@@ -58,6 +58,8 @@ public class ServicesServiceImpl implements ServicesService{
         service.setUpdatedAt(null);
         service.setAppointments(new ArrayList<>());
 
+        shop.getServices().add(service);
+
         servicesRepository.save(service);
 
         apiResponse.setStatusCode(200L);

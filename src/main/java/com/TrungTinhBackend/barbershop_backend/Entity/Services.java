@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -38,11 +39,12 @@ public class Services {
 
     private boolean isDeleted;
 
-    @ManyToMany(mappedBy = "services")
+    @ManyToMany(mappedBy = "services",cascade = {CascadeType.PERSIST,CascadeType.MERGE})
     @JsonIgnore
     private List<Appointments> appointments;
 
-    @ManyToMany(mappedBy = "services")
+    @ManyToMany(mappedBy = "services",cascade = {CascadeType.PERSIST,CascadeType.MERGE})
     @JsonIgnore
-    private Set<Shops> shops;
+    private Set<Shops> shops = new HashSet<>();
+
 }

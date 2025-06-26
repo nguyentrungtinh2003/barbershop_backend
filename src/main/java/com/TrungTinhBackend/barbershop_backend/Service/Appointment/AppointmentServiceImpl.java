@@ -147,6 +147,19 @@ public class AppointmentServiceImpl implements AppointmentService{
     }
 
     @Override
+    public APIResponse getAppointmentByCustomerId(Long customerId) {
+        APIResponse apiResponse = new APIResponse();
+
+        List<Appointments> appointments = appointmentsRepository.findByCustomerId(customerId);
+
+        apiResponse.setStatusCode(200L);
+        apiResponse.setMessage("Get appointment by customerId = "+customerId+" success");
+        apiResponse.setData(appointments);
+        apiResponse.setTimestamp(LocalDateTime.now());
+        return apiResponse;
+    }
+
+    @Override
     public APIResponse searchAppointment(String keyword, int page, int size) {
         APIResponse apiResponse = new APIResponse();
 

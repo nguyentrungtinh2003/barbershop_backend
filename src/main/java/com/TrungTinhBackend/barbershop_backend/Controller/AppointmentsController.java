@@ -40,6 +40,11 @@ public class AppointmentsController {
         return ResponseEntity.ok(appointmentService.getAppointmentById(id));
     }
 
+    @GetMapping("/customer/{customerId}")
+    public ResponseEntity<APIResponse> getAppointmentByCustomerId(@PathVariable Long customerId) throws IOException {
+        return ResponseEntity.ok(appointmentService.getAppointmentByCustomerId(customerId));
+    }
+
     @GetMapping("/search")
     public ResponseEntity<APIResponse> searchAppointment(@RequestParam(name = "keyword") String keyword,
                                                      @RequestParam(defaultValue = "0") int page,

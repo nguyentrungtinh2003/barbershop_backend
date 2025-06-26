@@ -65,9 +65,11 @@ public class Users implements UserDetails {
     private List<Feedbacks> barberFeedbacks;
 
     @OneToMany(mappedBy = "customer")
+    @JsonIgnore
     private List<Appointments> customerAppointments;
 
     @OneToMany(mappedBy = "barber")
+    @JsonIgnore
     private List<Appointments> barberAppointments;
 
     //
@@ -75,7 +77,7 @@ public class Users implements UserDetails {
     @JsonIgnore
     private List<Shops> shop;
 
-    @ManyToMany(mappedBy = "barbers")
+    @ManyToMany(mappedBy = "barbers",cascade = {CascadeType.PERSIST,CascadeType.MERGE})
     @JsonIgnore
     private Set<Shops> shops;
 

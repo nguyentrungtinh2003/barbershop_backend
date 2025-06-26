@@ -35,20 +35,17 @@ public class Appointments {
 
     @ManyToOne
     @JoinColumn(name = "customer_id")
-    @JsonIgnore
     private Users customer;
 
     @ManyToOne
     @JoinColumn(name = "barber_id")
-    @JsonIgnore
     private Users barber;
 
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.PERSIST,CascadeType.MERGE})
     @JoinTable(name = "appointment_service",
     joinColumns = @JoinColumn(name = "appointment_id"),
             inverseJoinColumns = @JoinColumn(name = "service_id")
     )
-    @JsonIgnore
     private List<Services> services;
 
     @OneToOne(mappedBy = "appointments", cascade = CascadeType.ALL)
@@ -56,7 +53,6 @@ public class Appointments {
 
     @ManyToOne()
     @JoinColumn(name = "shop_id")
-    @JsonIgnore
     private Shops shop;
 
     private LocalDateTime createdAt;

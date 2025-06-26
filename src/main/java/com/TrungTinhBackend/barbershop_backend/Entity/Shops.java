@@ -1,5 +1,6 @@
 package com.TrungTinhBackend.barbershop_backend.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -62,5 +63,6 @@ public class Shops {
     private Set<Services> services;
 
     @OneToMany(mappedBy = "shop")
+    @JsonIgnore
     private List<Appointments> appointments;
 }
