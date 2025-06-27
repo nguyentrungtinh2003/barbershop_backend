@@ -12,4 +12,5 @@ import java.util.List;
 public interface AppointmentsRepository extends JpaRepository<Appointments,Long>, JpaSpecificationExecutor<Appointments> {
     List<Appointments> findByShopIdAndBarberIdAndStartTimeBetween(Long shopId, Long barberId, LocalDateTime startTime, LocalDateTime endTime);
     List<Appointments> findByCustomerId(Long customerId);
+    List<Appointments> findByShopId(Long shopId);
 }
