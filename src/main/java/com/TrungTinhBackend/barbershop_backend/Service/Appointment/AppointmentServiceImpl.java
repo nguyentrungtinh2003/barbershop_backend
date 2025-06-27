@@ -88,6 +88,7 @@ public class AppointmentServiceImpl implements AppointmentService{
         appointment.setStartTime(startTime);
         appointment.setEndTime(endTime);
         appointment.setDate(date);
+        appointment.setPaid(false);
 
         appointmentsRepository.save(appointment);
 
@@ -160,6 +161,19 @@ public class AppointmentServiceImpl implements AppointmentService{
     }
 
     @Override
+    public APIResponse getAppointmentByBarberId(Long barberId) {
+        APIResponse apiResponse = new APIResponse();
+
+        List<Appointments> appointments = appointmentsRepository.findByBarberId(barberId);
+
+        apiResponse.setStatusCode(200L);
+        apiResponse.setMessage("Get appointment by barberId = "+barberId+" success");
+        apiResponse.setData(appointments);
+        apiResponse.setTimestamp(LocalDateTime.now());
+        return apiResponse;
+    }
+
+    @Override
     public APIResponse getAppointmentByShopId(Long shopId) {
         APIResponse apiResponse = new APIResponse();
 
@@ -168,6 +182,24 @@ public class AppointmentServiceImpl implements AppointmentService{
         apiResponse.setStatusCode(200L);
         apiResponse.setMessage("Get appointment by shopId = "+shopId+" success");
         apiResponse.setData(appointments);
+        apiResponse.setTimestamp(LocalDateTime.now());
+        return apiResponse;
+    }
+
+    @Override
+    public APIResponse markAsPaid(Long id) {
+        APIResponse apiResponse = new APIResponse();
+
+        Appointments appointment = appointmentsRepository.findById(id).orElseThrow(
+                () -> new NotFoundException("Appointment not found")
+        );
+
+        appointment.setPaid(true);
+        appointmentsRepository.save(appointment);
+
+        apiResponse.setStatusCode(200L);
+        apiResponse.setMessage("Mark as paid appointment id = "+id+" success");
+        apiResponse.setData(appointment);
         apiResponse.setTimestamp(LocalDateTime.now());
         return apiResponse;
     }

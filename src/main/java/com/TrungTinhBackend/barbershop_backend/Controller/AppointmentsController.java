@@ -45,6 +45,11 @@ public class AppointmentsController {
         return ResponseEntity.ok(appointmentService.getAppointmentByCustomerId(customerId));
     }
 
+    @GetMapping("/barber/{barberId}")
+    public ResponseEntity<APIResponse> getAppointmentByBarberId(@PathVariable Long barberId) throws IOException {
+        return ResponseEntity.ok(appointmentService.getAppointmentByBarberId(barberId));
+    }
+
     @GetMapping("/shop/{shopId}")
     public ResponseEntity<APIResponse> getAppointmentByShopId(@PathVariable Long shopId) throws IOException {
         return ResponseEntity.ok(appointmentService.getAppointmentByShopId(shopId));
@@ -60,6 +65,11 @@ public class AppointmentsController {
     @PutMapping("/update/{id}")
     public ResponseEntity<APIResponse> updateAppointment(@PathVariable Long id,@RequestBody AppointmentDTO appointmentDTO) throws IOException {
         return ResponseEntity.ok(appointmentService.updateAppointment(id,appointmentDTO));
+    }
+
+    @PutMapping("/mark-paid/{id}")
+    public ResponseEntity<APIResponse> markAsPaidAppointment(@PathVariable Long id) throws IOException {
+        return ResponseEntity.ok(appointmentService.markAsPaid(id));
     }
 
     @DeleteMapping("/delete/{id}")

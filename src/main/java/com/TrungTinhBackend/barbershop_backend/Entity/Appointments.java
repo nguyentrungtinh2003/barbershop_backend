@@ -33,6 +33,8 @@ public class Appointments {
 
     private Double price;
 
+    private boolean isPaid;
+
     @ManyToOne
     @JoinColumn(name = "customer_id")
     private Users customer;
