@@ -19,6 +19,8 @@ import com.TrungTinhBackend.barbershop_backend.Service.Search.Specification.User
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -65,6 +67,7 @@ public class UserServiceImpl implements UserService{
     private ImgService imgService;
 
     @Override
+    @CacheEvict(value = {"allUser", "user", "pageUser"}, allEntries = true)
     public APIResponse register(RegisterDTO registerDTO, MultipartFile img) throws IOException {
         APIResponse apiResponse = new APIResponse();
 
@@ -144,6 +147,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    @Cacheable(value = "allUser")
     public APIResponse getAllUser() {
         APIResponse apiResponse = new APIResponse();
 
@@ -157,6 +161,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    @Cacheable(value = "pageUser")
     public APIResponse getUserByPage(int page, int size) {
         APIResponse apiResponse = new APIResponse();
 
@@ -171,6 +176,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    @Cacheable(value = "user",key = "#id")
     public APIResponse getUserById(Long id) {
         APIResponse apiResponse = new APIResponse();
 
@@ -186,6 +192,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    @CacheEvict(value = {"allUser", "user", "pageUser"}, allEntries = true)
     public APIResponse updateUser(Long id, UserDTO userDTO, MultipartFile img) throws IOException {
         APIResponse apiResponse = new APIResponse();
 
@@ -236,6 +243,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    @CacheEvict(value = {"allUser", "user", "pageUser"}, allEntries = true)
     public APIResponse deleteUser(Long id) {
         APIResponse apiResponse = new APIResponse();
 
@@ -254,6 +262,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    @CacheEvict(value = {"allUser", "user", "pageUser"}, allEntries = true)
     public APIResponse restoreUser(Long id) {
         APIResponse apiResponse = new APIResponse();
 
