@@ -42,8 +42,8 @@ public class RedisConfig {
 
         RedisCacheConfiguration config = RedisCacheConfiguration.defaultCacheConfig()
                 .entryTtl(Duration.ofMinutes(5))
-                .serializeValuesWith(pair)
-                .disableCachingNullValues();
+                .disableCachingNullValues()
+                .serializeValuesWith(pair);
 
         return RedisCacheManager.builder(redisConnectionFactory)
                 .cacheDefaults(config)
