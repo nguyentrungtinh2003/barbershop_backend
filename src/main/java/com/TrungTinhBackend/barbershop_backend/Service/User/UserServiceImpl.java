@@ -18,6 +18,8 @@ import com.TrungTinhBackend.barbershop_backend.Service.RefreshTokenService.Refre
 import com.TrungTinhBackend.barbershop_backend.Service.Search.Specification.UserSpecification;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -38,6 +40,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService{
@@ -65,6 +68,8 @@ public class UserServiceImpl implements UserService{
 
     @Autowired
     private ImgService imgService;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
 
     @Override
     @CacheEvict(value = {"allUser", "user", "pageUser"}, allEntries = true)
@@ -152,10 +157,25 @@ public class UserServiceImpl implements UserService{
         APIResponse apiResponse = new APIResponse();
 
         List<Users> users = usersRepository.findAll();
+        LOGGER.info("Query in SQL ...");
+
+        List<UserDTO> userDTOS = users.stream().map(user -> { UserDTO userDTO = new UserDTO();
+            userDTO.setId(user.getId());
+        userDTO.setUsername(user.getUsername());
+        userDTO.setEmail(user.getEmail());
+        userDTO.setImg(user.getImg());
+        userDTO.setPhoneNumber(user.getPhoneNumber());
+        userDTO.setAddress(user.getAddress());
+        userDTO.setDescription(user.getDescription());
+        userDTO.setBirthDay(user.getBirthDay());
+        userDTO.setRoleEnum(user.getRoleEnum());
+        userDTO.setDeleted(user.isDeleted());
+        return userDTO;
+        }).toList();
 
         apiResponse.setStatusCode(200L);
         apiResponse.setMessage("Get all users success");
-        apiResponse.setData(users);
+        apiResponse.setData(userDTOS);
         apiResponse.setTimestamp(LocalDateTime.now());
         return apiResponse;
     }
@@ -167,10 +187,25 @@ public class UserServiceImpl implements UserService{
 
         Pageable pageable = PageRequest.of(page,size);
         Page<Users> users = usersRepository.findAll(pageable);
+        LOGGER.info("Query in SQL ...");
+
+        Page<UserDTO> userDTOS = users.map(user -> { UserDTO userDTO = new UserDTO();
+            userDTO.setId(user.getId());
+            userDTO.setUsername(user.getUsername());
+            userDTO.setEmail(user.getEmail());
+            userDTO.setImg(user.getImg());
+            userDTO.setPhoneNumber(user.getPhoneNumber());
+            userDTO.setAddress(user.getAddress());
+            userDTO.setDescription(user.getDescription());
+            userDTO.setBirthDay(user.getBirthDay());
+            userDTO.setRoleEnum(user.getRoleEnum());
+            userDTO.setDeleted(user.isDeleted());
+            return userDTO;
+        });
 
         apiResponse.setStatusCode(200L);
         apiResponse.setMessage("Get users by page = "+page+" size = "+size+" success");
-        apiResponse.setData(users);
+        apiResponse.setData(userDTOS);
         apiResponse.setTimestamp(LocalDateTime.now());
         return apiResponse;
     }
@@ -183,10 +218,23 @@ public class UserServiceImpl implements UserService{
         Users user = usersRepository.findById(id).orElseThrow(
                 () -> new NotFoundException("User not found !")
         );
+        LOGGER.info("Query in SQL ...");
+
+        UserDTO userDTO = new UserDTO();
+        userDTO.setId(user.getId());
+        userDTO.setUsername(user.getUsername());
+        userDTO.setEmail(user.getEmail());
+        userDTO.setImg(user.getImg());
+        userDTO.setPhoneNumber(user.getPhoneNumber());
+        userDTO.setAddress(user.getAddress());
+        userDTO.setDescription(user.getDescription());
+        userDTO.setBirthDay(user.getBirthDay());
+        userDTO.setRoleEnum(user.getRoleEnum());
+        userDTO.setDeleted(user.isDeleted());
 
         apiResponse.setStatusCode(200L);
         apiResponse.setMessage("Get users by id = "+id+" success");
-        apiResponse.setData(user);
+        apiResponse.setData(userDTO);
         apiResponse.setTimestamp(LocalDateTime.now());
         return apiResponse;
     }
@@ -237,7 +285,7 @@ public class UserServiceImpl implements UserService{
 
         apiResponse.setStatusCode(200L);
         apiResponse.setMessage("Update user with id = " + id + " success");
-        apiResponse.setData(user);
+
         apiResponse.setTimestamp(LocalDateTime.now());
         return apiResponse;
     }
@@ -256,7 +304,6 @@ public class UserServiceImpl implements UserService{
 
         apiResponse.setStatusCode(200L);
         apiResponse.setMessage("Delete user with id = "+id+" success");
-        apiResponse.setData(user);
         apiResponse.setTimestamp(LocalDateTime.now());
         return apiResponse;
     }
@@ -265,7 +312,6 @@ public class UserServiceImpl implements UserService{
     @CacheEvict(value = {"allUser", "user", "pageUser"}, allEntries = true)
     public APIResponse restoreUser(Long id) {
         APIResponse apiResponse = new APIResponse();
-
         Users user = usersRepository.findById(id).orElseThrow(
                 () -> new NotFoundException("User not found !")
         );
@@ -275,7 +321,6 @@ public class UserServiceImpl implements UserService{
 
         apiResponse.setStatusCode(200L);
         apiResponse.setMessage("Restore user with id = "+id+" success");
-        apiResponse.setData(user);
         apiResponse.setTimestamp(LocalDateTime.now());
         return apiResponse;
     }
@@ -289,9 +334,23 @@ public class UserServiceImpl implements UserService{
 
         Page<Users> users = usersRepository.findAll(specification,pageable);
 
+        Page<UserDTO> userDTOS = users.map(user -> { UserDTO userDTO = new UserDTO();
+            userDTO.setId(user.getId());
+            userDTO.setUsername(user.getUsername());
+            userDTO.setEmail(user.getEmail());
+            userDTO.setImg(user.getImg());
+            userDTO.setPhoneNumber(user.getPhoneNumber());
+            userDTO.setAddress(user.getAddress());
+            userDTO.setDescription(user.getDescription());
+            userDTO.setBirthDay(user.getBirthDay());
+            userDTO.setRoleEnum(user.getRoleEnum());
+            userDTO.setDeleted(user.isDeleted());
+            return userDTO;
+        });
+
         apiResponse.setStatusCode(200L);
         apiResponse.setMessage("Search user with keyword = "+keyword+" success");
-        apiResponse.setData(users);
+        apiResponse.setData(userDTOS);
         apiResponse.setTimestamp(LocalDateTime.now());
         return apiResponse;
     }

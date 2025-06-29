@@ -29,4 +29,5 @@ public class UserDTO {
 
     private String description;
 
+    private boolean isDeleted;
 }

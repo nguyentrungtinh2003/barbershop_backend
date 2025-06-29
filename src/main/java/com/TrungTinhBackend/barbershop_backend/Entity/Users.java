@@ -56,12 +56,15 @@ public class Users implements UserDetails {
     private LocalDateTime otpExpiry;
 
     @OneToMany(mappedBy = "customer")
+    @JsonIgnore
     private List<Payments> payments;
 
     @OneToMany(mappedBy = "customer")
+    @JsonIgnore
     private List<Feedbacks> customerFeedbacks;
 
     @OneToMany(mappedBy = "barber")
+    @JsonIgnore
     private List<Feedbacks> barberFeedbacks;
 
     @OneToMany(mappedBy = "customer")
