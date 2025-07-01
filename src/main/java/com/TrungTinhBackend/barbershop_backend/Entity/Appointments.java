@@ -57,6 +57,9 @@ public class Appointments {
     @JoinColumn(name = "shop_id")
     private Shops shop;
 
+    @OneToOne(mappedBy = "appointment")
+    private Feedbacks feedback;
+
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;

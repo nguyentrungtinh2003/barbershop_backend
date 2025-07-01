@@ -1,5 +1,6 @@
 package com.TrungTinhBackend.barbershop_backend.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -30,6 +31,11 @@ public class Feedbacks {
     @ManyToOne()
     @JoinColumn(name = "shop_id")
     private Shops shop;
+
+    @OneToOne
+    @JoinColumn(name = "appointment_id", unique = true)
+    @JsonIgnore
+    private Appointments appointment;
 
     private String img;
 

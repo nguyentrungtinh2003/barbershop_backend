@@ -1,10 +1,12 @@
 package com.TrungTinhBackend.barbershop_backend.Service.Feedback;
 
 import com.TrungTinhBackend.barbershop_backend.DTO.FeedbackDTO;
+import com.TrungTinhBackend.barbershop_backend.Entity.Appointments;
 import com.TrungTinhBackend.barbershop_backend.Entity.Feedbacks;
 import com.TrungTinhBackend.barbershop_backend.Entity.Shops;
 import com.TrungTinhBackend.barbershop_backend.Entity.Users;
 import com.TrungTinhBackend.barbershop_backend.Exception.NotFoundException;
+import com.TrungTinhBackend.barbershop_backend.Repository.AppointmentsRepository;
 import com.TrungTinhBackend.barbershop_backend.Repository.FeedbacksRepository;
 import com.TrungTinhBackend.barbershop_backend.Repository.ShopsRepository;
 import com.TrungTinhBackend.barbershop_backend.Repository.UsersRepository;
@@ -38,6 +40,9 @@ public class FeedbackServiceImpl implements FeedbackService{
     private ShopsRepository shopsRepository;
 
     @Autowired
+    private AppointmentsRepository appointmentsRepository;
+
+    @Autowired
     private ImgService imgService;
 
     @Autowired
@@ -61,9 +66,14 @@ public class FeedbackServiceImpl implements FeedbackService{
                 () -> new NotFoundException("Shop not found !")
         );
 
+        Appointments appointment = appointmentsRepository.findById(feedbackDTO.getAppointmentId()).orElseThrow(
+                () -> new NotFoundException("Appointment not found !")
+        );
+
         feedback.setCustomer(customer);
         feedback.setBarber(barber);
         feedback.setShop(shop);
+        feedback.setAppointment(appointment);
         feedback.setComment(feedbackDTO.getComment());
         feedback.setRating(feedbackDTO.getRating());
         feedback.setCreatedAt(LocalDateTime.now());
@@ -73,6 +83,7 @@ public class FeedbackServiceImpl implements FeedbackService{
             feedback.setImg(imgService.uploadImg(img));
         }
 
+        appointment.setFeedback(feedback);
         feedbacksRepository.save(feedback);
 
         FeedbackDTO feedbackDTO1 = new FeedbackDTO();

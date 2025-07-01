@@ -29,6 +29,8 @@ public class FeedbackDTO {
 
     private String shopImg;
 
+    private Long appointmentId;
+
     private String img;
 
     private Integer rating;
