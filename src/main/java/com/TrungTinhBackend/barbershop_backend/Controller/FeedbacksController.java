@@ -34,6 +34,21 @@ public class FeedbacksController {
         return ResponseEntity.ok(feedbackService.getFeedbackById(id));
     }
 
+    @GetMapping("/shop/{shopId}")
+    public ResponseEntity<APIResponse> getFeedbackByShopId(@PathVariable Long shopId) throws IOException {
+        return ResponseEntity.ok(feedbackService.getFeedbackByShopId(shopId));
+    }
+
+    @GetMapping("/customer/{customerId}")
+    public ResponseEntity<APIResponse> getFeedbackByCustomerId(@PathVariable Long customerId) throws IOException {
+        return ResponseEntity.ok(feedbackService.getFeedbackByCustomerId(customerId));
+    }
+
+    @GetMapping("/barber/{barberId}")
+    public ResponseEntity<APIResponse> getFeedbackByBarberId(@PathVariable Long barberId) throws IOException {
+        return ResponseEntity.ok(feedbackService.getFeedbackByBarberId(barberId));
+    }
+
     @GetMapping("/search")
     public ResponseEntity<APIResponse> searchFeedback(@RequestParam(name = "keyword") String keyword,
                                                      @RequestParam(defaultValue = "0") int page,

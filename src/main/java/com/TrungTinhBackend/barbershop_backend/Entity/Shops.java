@@ -54,6 +54,10 @@ public class Shops {
     )
     private Set<Users> barbers;
 
+    @OneToMany(mappedBy = "shop")
+    @JsonIgnore
+    private List<Feedbacks> shopFeedbacks;
+
     @ManyToMany(cascade = {CascadeType.PERSIST,CascadeType.MERGE})
     @JoinTable(
             name = "shop_service",

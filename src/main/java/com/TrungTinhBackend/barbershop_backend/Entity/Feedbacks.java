@@ -27,6 +27,10 @@ public class Feedbacks {
     @JoinColumn(name = "barber_id")
     private Users barber;
 
+    @ManyToOne()
+    @JoinColumn(name = "shop_id")
+    private Shops shop;
+
     private String img;
 
     private Integer rating;

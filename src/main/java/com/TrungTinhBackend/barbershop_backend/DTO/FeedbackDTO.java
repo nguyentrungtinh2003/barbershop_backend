@@ -11,9 +11,23 @@ public class FeedbackDTO {
 
     private Long id;
 
-    private Users customer;
+    private Long customerId;
 
-    private Users barber;
+    private String customerName;
+
+    private String customerImg;
+
+    private Long barberId;
+
+    private String barberName;
+
+    private String barberImg;
+
+    private Long shopId;
+
+    private String shopName;
+
+    private String shopImg;
 
     private String img;
 

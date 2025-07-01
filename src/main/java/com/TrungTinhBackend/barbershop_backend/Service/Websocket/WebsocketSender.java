@@ -12,6 +12,6 @@ public class WebsocketSender {
     private SimpMessagingTemplate simpMessagingTemplate;
 
     public void sendFeedback(FeedbackDTO feedbackDTO) {
-        simpMessagingTemplate.convertAndSend("/topic/"+feedbackDTO.getId(),feedbackDTO);
+        simpMessagingTemplate.convertAndSend("/topic/feedback"+feedbackDTO.getBarberId(),feedbackDTO);
     }
 }
