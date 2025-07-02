@@ -33,7 +33,7 @@ public class Feedbacks {
     private Shops shop;
 
     @OneToOne
-    @JoinColumn(name = "appointment_id", unique = true)
+    @JoinColumn(name = "appointment_id")
     @JsonIgnore
     private Appointments appointment;
 

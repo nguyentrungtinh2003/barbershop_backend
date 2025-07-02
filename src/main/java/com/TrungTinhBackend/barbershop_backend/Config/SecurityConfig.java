@@ -70,7 +70,7 @@ public class SecurityConfig {
 
                         // Thêm các đường dẫn Swagger UI và tài liệu API để không bị chặn
                         .requestMatchers("/api/login","/api/register","/api/forgot-password","/api/reset-password","/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**", "/oauth2/**",             // 👈 Cho phép truy cập OAuth2 endpoint
-                                "/login/oauth2/**", "/robots.txt", "/api/ws/**",  "/api/user-google" ).permitAll()
+                                "/login/oauth2/**", "/robots.txt", "/ws/**",  "/api/user-google" ).permitAll()
                         // Các API cần quyền truy cập
                         .requestMatchers("/api/admin/**").hasAuthority("ROLE_ADMIN")
                         .requestMatchers("/api/owner/**").hasAnyAuthority("ROLE_OWNER", "ROLE_ADMIN")
