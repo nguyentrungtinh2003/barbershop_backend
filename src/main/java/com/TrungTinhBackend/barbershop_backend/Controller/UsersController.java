@@ -10,6 +10,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -45,8 +47,8 @@ public class UsersController {
     }
 
     @GetMapping("/users/{id}")
-    public ResponseEntity<APIResponse> getUserById(@PathVariable Long id) {
-        return ResponseEntity.ok(userService.getUserById(id));
+    public ResponseEntity<APIResponse> getUserById(@PathVariable Long id, @AuthenticationPrincipal UserDetails userDetails) {
+        return ResponseEntity.ok(userService.getUserById(id,userDetails));
     }
 
     @PutMapping("/owner/users/update/{id}")

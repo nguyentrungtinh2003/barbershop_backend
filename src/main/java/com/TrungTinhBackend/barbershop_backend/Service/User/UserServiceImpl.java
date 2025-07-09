@@ -31,6 +31,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -181,7 +182,6 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    @Cacheable(value = "pageUser")
     public APIResponse getUserByPage(int page, int size) {
         APIResponse apiResponse = new APIResponse();
 
@@ -189,31 +189,30 @@ public class UserServiceImpl implements UserService{
         Page<Users> users = usersRepository.findAll(pageable);
         LOGGER.info("Query in SQL ...");
 
-        Page<UserDTO> userDTOS = users.map(user -> { UserDTO userDTO = new UserDTO();
-            userDTO.setId(user.getId());
-            userDTO.setUsername(user.getUsername());
-            userDTO.setEmail(user.getEmail());
-            userDTO.setImg(user.getImg());
-            userDTO.setPhoneNumber(user.getPhoneNumber());
-            userDTO.setAddress(user.getAddress());
-            userDTO.setDescription(user.getDescription());
-            userDTO.setBirthDay(user.getBirthDay());
-            userDTO.setRoleEnum(user.getRoleEnum());
-            userDTO.setDeleted(user.isDeleted());
-            return userDTO;
-        });
-
         apiResponse.setStatusCode(200L);
         apiResponse.setMessage("Get users by page = "+page+" size = "+size+" success");
-        apiResponse.setData(userDTOS);
+        apiResponse.setData(users);
         apiResponse.setTimestamp(LocalDateTime.now());
         return apiResponse;
     }
 
     @Override
     @Cacheable(value = "user",key = "#id")
-    public APIResponse getUserById(Long id) {
+    public APIResponse getUserById(Long id, UserDetails userDetails) {
         APIResponse apiResponse = new APIResponse();
+
+        Users register = usersRepository.findByUsername(userDetails.getUsername());
+
+        boolean isAdmin = register.getRoleEnum() == RoleEnum.ADMIN;
+        boolean isOwner = register.getId().equals(id);
+
+        if(!isAdmin && !isOwner) {
+            apiResponse.setStatusCode(403L);
+            apiResponse.setMessage("Bạn không có quyền truy cập !");
+            apiResponse.setData(null);
+            apiResponse.setTimestamp(LocalDateTime.now());
+            return apiResponse;
+        }
 
         Users user = usersRepository.findById(id).orElseThrow(
                 () -> new NotFoundException("User not found !")

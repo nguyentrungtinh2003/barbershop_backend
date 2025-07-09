@@ -7,6 +7,7 @@ import com.TrungTinhBackend.barbershop_backend.DTO.UserDTO;
 import com.TrungTinhBackend.barbershop_backend.Response.APIResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -16,7 +17,7 @@ public interface UserService {
     APIResponse login(LoginDTO loginDTO, HttpServletResponse response, HttpServletRequest request);
     APIResponse getAllUser();
     APIResponse getUserByPage(int page, int size);
-    APIResponse getUserById(Long id);
+    APIResponse getUserById(Long id, UserDetails userDetails);
     APIResponse updateUser(Long id, UserDTO userDTO, MultipartFile img) throws IOException;
     APIResponse deleteUser(Long id);
     APIResponse restoreUser(Long id);

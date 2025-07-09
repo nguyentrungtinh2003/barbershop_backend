@@ -187,6 +187,20 @@ public class AppointmentServiceImpl implements AppointmentService{
     }
 
     @Override
+    public APIResponse getAppointmentByShopIdAndIsPaid(Long shopId) {
+        APIResponse apiResponse = new APIResponse();
+
+        List<Appointments> appointments = appointmentsRepository.findByShopIdAndIsPaidTrue(shopId);
+
+
+        apiResponse.setStatusCode(200L);
+        apiResponse.setMessage("Get appointment by shopId = "+shopId+" and is paid = true success");
+        apiResponse.setData(appointments);
+        apiResponse.setTimestamp(LocalDateTime.now());
+        return apiResponse;
+    }
+
+    @Override
     public APIResponse markAsPaid(Long id) {
         APIResponse apiResponse = new APIResponse();
 

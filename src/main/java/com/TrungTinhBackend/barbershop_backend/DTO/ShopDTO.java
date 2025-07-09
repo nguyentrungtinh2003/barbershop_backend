@@ -1,9 +1,7 @@
 package com.TrungTinhBackend.barbershop_backend.DTO;
 
 import lombok.Data;
-
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Set;
 
 @Data
