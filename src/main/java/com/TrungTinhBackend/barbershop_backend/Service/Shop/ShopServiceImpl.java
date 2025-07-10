@@ -8,11 +8,14 @@ import com.TrungTinhBackend.barbershop_backend.Repository.ShopsRepository;
 import com.TrungTinhBackend.barbershop_backend.Repository.UsersRepository;
 import com.TrungTinhBackend.barbershop_backend.Response.APIResponse;
 import com.TrungTinhBackend.barbershop_backend.Service.Img.ImgService;
+import com.TrungTinhBackend.barbershop_backend.Service.Search.Specification.ShopSpecification;
+import com.TrungTinhBackend.barbershop_backend.Service.Search.Specification.UserSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -108,6 +111,22 @@ public class ShopServiceImpl implements ShopService{
         apiResponse.setStatusCode(200L);
         apiResponse.setMessage("Get shop by id = "+id+" success");
         apiResponse.setData(shop);
+        apiResponse.setTimestamp(LocalDateTime.now());
+        return apiResponse;
+    }
+
+    @Override
+    public APIResponse searchShop(String keyword, int page, int size) {
+        APIResponse apiResponse = new APIResponse();
+
+        Pageable pageable = PageRequest.of(page,size);
+        Specification<Shops> specification = ShopSpecification.searchByKeyword(keyword);
+
+        Page<Shops> shops = shopsRepository.findAll(specification,pageable);
+
+        apiResponse.setStatusCode(200L);
+        apiResponse.setMessage("Search shop by keyword = "+keyword+" success");
+        apiResponse.setData(shops);
         apiResponse.setTimestamp(LocalDateTime.now());
         return apiResponse;
     }

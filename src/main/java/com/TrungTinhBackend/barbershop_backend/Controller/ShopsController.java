@@ -34,6 +34,13 @@ public class ShopsController {
         return ResponseEntity.ok(shopService.getAllShop());
     }
 
+    @GetMapping("/owner/shops/search")
+    public ResponseEntity<APIResponse> searchUser(@RequestParam(name = "keyword") String keyword,
+                                                  @RequestParam(defaultValue = "0") int page,
+                                                  @RequestParam(defaultValue = "6") int size) throws IOException {
+        return ResponseEntity.ok(shopService.searchShop(keyword, page, size));
+    }
+
     @GetMapping("/shops/{id}")
     public ResponseEntity<APIResponse> getShopById(@PathVariable Long id) throws IOException {
         return ResponseEntity.ok(shopService.getShopById(id));
