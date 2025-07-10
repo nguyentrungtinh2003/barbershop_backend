@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -49,7 +51,7 @@ public class ShopServiceImpl implements ShopService{
         shop.setEmail(shopDTO.getEmail());
         shop.setDescription(shopDTO.getDescription());
         shop.setPhoneNumber(shopDTO.getPhoneNumber());
-        shop.setCreateAt(LocalDate.now());
+        shop.setCreatedAt(LocalDate.now());
         if(img != null) {
             shop.setImg(imgService.uploadImg(img));
         }
@@ -71,7 +73,7 @@ public class ShopServiceImpl implements ShopService{
     public APIResponse getShopByPage(int page, int size) {
         APIResponse apiResponse = new APIResponse();
 
-        Pageable pageable = PageRequest.of(page,size);
+        Pageable pageable = PageRequest.of(page,size, Sort.by("createdAt").descending());
         Page<Shops> shops = shopsRepository.findAll(pageable);
 
         apiResponse.setStatusCode(200L);
@@ -86,6 +88,7 @@ public class ShopServiceImpl implements ShopService{
         APIResponse apiResponse = new APIResponse();
 
         List<Shops> shops = shopsRepository.findAll();
+        shops.sort(Comparator.comparing(Shops::getCreatedAt, Comparator.nullsLast(Comparator.naturalOrder())));
 
         apiResponse.setStatusCode(200L);
         apiResponse.setMessage("Get all shop success");

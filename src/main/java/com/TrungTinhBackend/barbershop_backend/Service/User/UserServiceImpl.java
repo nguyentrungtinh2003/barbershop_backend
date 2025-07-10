@@ -26,6 +26,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
@@ -38,6 +39,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
@@ -158,6 +160,7 @@ public class UserServiceImpl implements UserService{
         APIResponse apiResponse = new APIResponse();
 
         List<Users> users = usersRepository.findAll();
+        users.sort(Comparator.comparing(Users::getCreatedAt));
         LOGGER.info("Query in SQL ...");
 
         List<UserDTO> userDTOS = users.stream().map(user -> { UserDTO userDTO = new UserDTO();
@@ -185,7 +188,7 @@ public class UserServiceImpl implements UserService{
     public APIResponse getUserByPage(int page, int size) {
         APIResponse apiResponse = new APIResponse();
 
-        Pageable pageable = PageRequest.of(page,size);
+        Pageable pageable = PageRequest.of(page,size, Sort.by("createdAt").descending());
         Page<Users> users = usersRepository.findAll(pageable);
         LOGGER.info("Query in SQL ...");
 

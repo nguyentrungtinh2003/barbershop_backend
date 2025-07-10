@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -23,10 +24,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -122,7 +120,7 @@ public class AppointmentServiceImpl implements AppointmentService{
     public APIResponse getAppointmentByPage(int page, int size) {
         APIResponse apiResponse = new APIResponse();
 
-        Pageable pageable = PageRequest.of(page,size);
+        Pageable pageable = PageRequest.of(page,size, Sort.by("createdAt").descending());
         Page<Appointments> appointments = appointmentsRepository.findAll(pageable);
 
         apiResponse.setStatusCode(200L);
@@ -152,6 +150,7 @@ public class AppointmentServiceImpl implements AppointmentService{
         APIResponse apiResponse = new APIResponse();
 
         List<Appointments> appointments = appointmentsRepository.findByCustomerId(customerId);
+        appointments.sort(Comparator.comparing(Appointments::getCreatedAt));
 
         apiResponse.setStatusCode(200L);
         apiResponse.setMessage("Get appointment by customerId = "+customerId+" success");
@@ -165,6 +164,7 @@ public class AppointmentServiceImpl implements AppointmentService{
         APIResponse apiResponse = new APIResponse();
 
         List<Appointments> appointments = appointmentsRepository.findByBarberId(barberId);
+        appointments.sort(Comparator.comparing(Appointments::getCreatedAt));
 
         apiResponse.setStatusCode(200L);
         apiResponse.setMessage("Get appointment by barberId = "+barberId+" success");
@@ -178,6 +178,7 @@ public class AppointmentServiceImpl implements AppointmentService{
         APIResponse apiResponse = new APIResponse();
 
         List<Appointments> appointments = appointmentsRepository.findByShopId(shopId);
+        appointments.sort(Comparator.comparing(Appointments::getCreatedAt));
 
         apiResponse.setStatusCode(200L);
         apiResponse.setMessage("Get appointment by shopId = "+shopId+" success");
@@ -190,8 +191,8 @@ public class AppointmentServiceImpl implements AppointmentService{
     public APIResponse getAppointmentByShopIdAndIsPaid(Long shopId) {
         APIResponse apiResponse = new APIResponse();
 
-        List<Appointments> appointments = appointmentsRepository.findByShopIdAndIsPaidTrue(shopId);
-
+        List<Appointments> appointments = appointmentsRepository.findByShopIdAndPaidTrue(shopId);
+        appointments.sort(Comparator.comparing(Appointments::getCreatedAt));
 
         apiResponse.setStatusCode(200L);
         apiResponse.setMessage("Get appointment by shopId = "+shopId+" and is paid = true success");
@@ -222,7 +223,7 @@ public class AppointmentServiceImpl implements AppointmentService{
     public APIResponse searchAppointment(String keyword, int page, int size) {
         APIResponse apiResponse = new APIResponse();
 
-        Pageable pageable = PageRequest.of(page,size);
+        Pageable pageable = PageRequest.of(page,size,Sort.by("createdAt").descending());
         Specification<Appointments> specification = AppointmentSpecification.searchByKeyword(keyword);
 
         Page<Appointments> appointments = appointmentsRepository.findAll(specification,pageable);

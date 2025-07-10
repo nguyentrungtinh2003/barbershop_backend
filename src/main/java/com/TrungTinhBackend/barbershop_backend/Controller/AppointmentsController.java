@@ -57,7 +57,7 @@ public class AppointmentsController {
 
     @GetMapping("/shop/{shopId}/payments")
     public ResponseEntity<APIResponse> getAppointmentByShopIdAndIsPaid(@PathVariable Long shopId) throws IOException {
-        return ResponseEntity.ok(appointmentService.getAppointmentByShopId(shopId));
+        return ResponseEntity.ok(appointmentService.getAppointmentByShopIdAndIsPaid(shopId));
     }
 
     @GetMapping("/search")

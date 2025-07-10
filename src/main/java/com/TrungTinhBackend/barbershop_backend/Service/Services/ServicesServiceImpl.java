@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -73,7 +74,7 @@ public class ServicesServiceImpl implements ServicesService{
     public APIResponse getServicesByPage(int page, int size) {
         APIResponse apiResponse = new APIResponse();
 
-        Pageable pageable = PageRequest.of(page,size);
+        Pageable pageable = PageRequest.of(page,size, Sort.by("createdAt").descending());
         Page<Services> services = servicesRepository.findAll(pageable);
 
         apiResponse.setStatusCode(200L);
@@ -149,7 +150,7 @@ public class ServicesServiceImpl implements ServicesService{
     public APIResponse searchServices(String keyword, int page, int size) {
         APIResponse apiResponse = new APIResponse();
 
-        Pageable pageable = PageRequest.of(page,size);
+        Pageable pageable = PageRequest.of(page,size,Sort.by("createdAt").descending());
         Specification<Services> specification = ServiceSpecification.searchByKeyword(keyword);
 
         Page<Services> services = servicesRepository.findAll(specification,pageable);

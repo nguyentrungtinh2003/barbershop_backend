@@ -36,7 +36,7 @@ public class Shops {
 
     private String slogan;
 
-    private LocalDate createAt;
+    private LocalDate createdAt;
 
     private LocalDate updateAt;
 

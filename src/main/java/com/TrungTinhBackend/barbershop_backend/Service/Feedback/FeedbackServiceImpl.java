@@ -18,12 +18,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -117,7 +119,7 @@ public class FeedbackServiceImpl implements FeedbackService{
 
         APIResponse apiResponse = new APIResponse();
 
-        Pageable pageable = PageRequest.of(page,size);
+        Pageable pageable = PageRequest.of(page,size, Sort.by("createdAt").descending());
         Page<Feedbacks> feedbacks = feedbacksRepository.findAll(pageable);
 
         Page<FeedbackDTO> feedbackDTOList = feedbacks.map(feedback -> {
@@ -186,6 +188,7 @@ public class FeedbackServiceImpl implements FeedbackService{
         APIResponse apiResponse = new APIResponse();
 
         List<Feedbacks> feedbacks = feedbacksRepository.findByShopId(shopId);
+        feedbacks.sort(Comparator.comparing(Feedbacks::getCreatedAt));
 
         List<FeedbackDTO> feedbackDTOList = feedbacks.stream().map(feedback -> {
             FeedbackDTO feedbackDTO = new FeedbackDTO();
@@ -208,7 +211,6 @@ public class FeedbackServiceImpl implements FeedbackService{
             return feedbackDTO;
         }).toList();
 
-
         apiResponse.setStatusCode(200L);
         apiResponse.setMessage("Get feedback by ShopId = "+shopId+" success");
         apiResponse.setData(feedbackDTOList);
@@ -221,6 +223,7 @@ public class FeedbackServiceImpl implements FeedbackService{
         APIResponse apiResponse = new APIResponse();
 
         List<Feedbacks> feedbacks = feedbacksRepository.findByCustomerId(customerId);
+        feedbacks.sort(Comparator.comparing(Feedbacks::getCreatedAt));
 
         List<FeedbackDTO> feedbackDTOList = feedbacks.stream().map(feedback -> {
             FeedbackDTO feedbackDTO = new FeedbackDTO();
@@ -256,6 +259,7 @@ public class FeedbackServiceImpl implements FeedbackService{
         APIResponse apiResponse = new APIResponse();
 
         List<Feedbacks> feedbacks = feedbacksRepository.findByBarberId(barberId);
+        feedbacks.sort(Comparator.comparing(Feedbacks::getCreatedAt));
 
         List<FeedbackDTO> feedbackDTOList = feedbacks.stream().map(feedback -> {
             FeedbackDTO feedbackDTO = new FeedbackDTO();
@@ -290,7 +294,7 @@ public class FeedbackServiceImpl implements FeedbackService{
     public APIResponse searchFeedback(String keyword, int page, int size) {
         APIResponse apiResponse = new APIResponse();
 
-        Pageable pageable = PageRequest.of(page,size);
+        Pageable pageable = PageRequest.of(page,size,Sort.by("createdAt").descending());
         Specification<Feedbacks> specification = FeedbackSpecification.searchByKeyword(keyword);
 
         Page<Feedbacks> feedbacks = feedbacksRepository.findAll(specification,pageable);
