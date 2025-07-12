@@ -15,7 +15,9 @@ import java.io.IOException;
 public interface UserService {
     APIResponse register(RegisterDTO registerDTO, MultipartFile img) throws IOException;
     APIResponse login(LoginDTO loginDTO, HttpServletResponse response, HttpServletRequest request);
+    APIResponse processOAuthPostLogin(UserDTO userDTO);
     APIResponse getAllUser();
+    APIResponse getUserInfo(UserDetails userDetails);
     APIResponse getUserByPage(int page, int size);
     APIResponse getUserById(Long id, UserDetails userDetails);
     APIResponse updateUser(Long id, UserDTO userDTO, MultipartFile img) throws IOException;

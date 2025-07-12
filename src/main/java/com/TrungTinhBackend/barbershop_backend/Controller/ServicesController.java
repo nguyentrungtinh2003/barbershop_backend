@@ -25,7 +25,7 @@ public class ServicesController {
 
     @GetMapping("/owner/services/page")
     public ResponseEntity<APIResponse> getServiceByPage(@RequestParam(defaultValue = "0") int page,
-                                                        @RequestParam(defaultValue = "6") int size) throws IOException {
+                                                        @RequestParam(defaultValue = "4") int size) throws IOException {
         return ResponseEntity.ok(servicesService.getServicesByPage(page, size));
     }
 

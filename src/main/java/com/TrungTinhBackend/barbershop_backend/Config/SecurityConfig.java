@@ -3,6 +3,8 @@ package com.TrungTinhBackend.barbershop_backend.Config;
 import com.TrungTinhBackend.barbershop_backend.Entity.Users;
 import com.TrungTinhBackend.barbershop_backend.Enum.RoleEnum;
 import com.TrungTinhBackend.barbershop_backend.Repository.UsersRepository;
+import com.TrungTinhBackend.barbershop_backend.Service.Google.CustomOAuth2User;
+import com.TrungTinhBackend.barbershop_backend.Service.Google.OAuth2LoginSuccessHandler;
 import com.TrungTinhBackend.barbershop_backend.Service.Jwt.JwtAuthFilter;
 import com.TrungTinhBackend.barbershop_backend.Service.Jwt.JwtUtils;
 import com.TrungTinhBackend.barbershop_backend.Service.RefreshTokenService.RefreshTokenService;
@@ -10,6 +12,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -27,6 +30,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -38,27 +45,15 @@ import java.util.Map;
 @EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
-    private final UserDetailsService userDetailsService;
+    @Autowired
+    private UserDetailsService userDetailsService;
 
     @Autowired
     private JwtAuthFilter jwtAuthFilter;
 
     @Autowired
-    private UsersRepository usersRepository;
-
-    @Autowired
-    private RefreshTokenService refreshTokenService;
-
-    @Autowired
-    private JwtUtils jwtUtils;
-
-    public SecurityConfig(UserDetailsService userDetailsService, JwtAuthFilter jwtAuthFilter, UsersRepository userRepository, RefreshTokenService refreshTokenService, JwtUtils jwtUtils) {
-        this.userDetailsService = userDetailsService;
-        this.jwtAuthFilter = jwtAuthFilter;
-        this.usersRepository = userRepository;
-        this.refreshTokenService = refreshTokenService;
-        this.jwtUtils = jwtUtils;
-    }
+    @Lazy
+    private OAuth2LoginSuccessHandler successHandler;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -70,7 +65,7 @@ public class SecurityConfig {
 
                         // Thêm các đường dẫn Swagger UI và tài liệu API để không bị chặn
                         .requestMatchers("/api/login","/api/register","/api/forgot-password","/api/reset-password","/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**", "/oauth2/**",             // 👈 Cho phép truy cập OAuth2 endpoint
-                                "/login/oauth2/**", "/robots.txt", "/ws/**",  "/api/user-google" ).permitAll()
+                                "/login/oauth2/**","/login/**", "/robots.txt", "/ws/**",  "/api/user-google" ).permitAll()
                         // Các API cần quyền truy cập
                         .requestMatchers("/api/admin/**").hasAuthority("ROLE_ADMIN")
                         .requestMatchers("/api/owner/**").hasAnyAuthority("ROLE_OWNER", "ROLE_ADMIN")
@@ -86,46 +81,19 @@ public class SecurityConfig {
                             response.getWriter().write("{\"error\": \"Unauthorized\", \"message\": \"You are not authorized to access this resource\"}");
                         })
                 )
-                // 🔹 Sử dụng Bean thay vì tạo mới instance
                 .oauth2Login(oauth -> oauth
-                        .successHandler((request, response, authentication) -> {
-                            OAuth2AuthenticationToken oauthToken = (OAuth2AuthenticationToken) authentication;
-
-                            Map<String, Object> attributes = oauthToken.getPrincipal().getAttributes();
-                            String email = (String) attributes.get("email");
-                            String name = (String) attributes.get("name");
-                            String picture = (String) attributes.get("picture");
-
-                            Users user = usersRepository.findByEmail(email);
-                            if (user == null) {
-                                user = new Users();
-                                user.setEmail(email);
-                                user.setUsername(name);
-                                user.setImg(picture);
-                                user.setRoleEnum(RoleEnum.CUSTOMER);
-                                usersRepository.save(user);
-                            }
-
-                            String jwt = jwtUtils.generateToken(user);
-                            String refreshToken = jwtUtils.generateRefreshToken(new HashMap<>(), user);
-                            refreshTokenService.createRefreshToken(refreshToken, user);
-
-                            ResponseCookie jwtCookie = ResponseCookie.from("authToken", jwt)
-                                    .httpOnly(true)
-                                    .secure(true)
-                                    .sameSite("None")
-                                    .path("/")
-                                    .maxAge(7 * 24 * 60 * 60)
-                                    .build();
-
-                            response.addHeader(HttpHeaders.SET_COOKIE, jwtCookie.toString());
-
-                            // ✅ Chuyển hướng về frontend sau khi đăng nhập thành công
-                            response.sendRedirect("https://codearena-frontend-dev.vercel.app/");
-                        })
+                        .userInfoEndpoint(userInfo -> userInfo.userService(oAuth2UserService()))
+                        .successHandler(successHandler)
                 )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
+    }
+
+    @Bean
+    public OAuth2UserService<OAuth2UserRequest, OAuth2User> oAuth2UserService() {
+        return userRequest -> new CustomOAuth2User(
+                new DefaultOAuth2UserService().loadUser(userRequest)
+        );
     }
 
     @Bean

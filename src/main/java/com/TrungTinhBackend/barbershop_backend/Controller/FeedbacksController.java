@@ -25,7 +25,7 @@ public class FeedbacksController {
 
     @GetMapping("/page")
     public ResponseEntity<APIResponse> getFeedbackByPage(@RequestParam(defaultValue = "0") int page,
-                                                         @RequestParam(defaultValue = "6") int size) throws IOException {
+                                                         @RequestParam(defaultValue = "4") int size) throws IOException {
         return ResponseEntity.ok(feedbackService.getFeedbackByPage(page, size));
     }
 

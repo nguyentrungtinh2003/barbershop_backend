@@ -42,8 +42,13 @@ public class UsersController {
 
     @GetMapping("/admin/users/page")
     public ResponseEntity<APIResponse> getUsersByPage(@RequestParam(defaultValue = "0") int page,
-                                                      @RequestParam(defaultValue = "6") int size) {
+                                                      @RequestParam(defaultValue = "4") int size) {
         return ResponseEntity.ok(userService.getUserByPage(page,size));
+    }
+
+    @GetMapping("/users/info")
+    public ResponseEntity<APIResponse> getUserInfo(@AuthenticationPrincipal UserDetails userDetails) {
+        return ResponseEntity.ok(userService.getUserInfo(userDetails));
     }
 
     @GetMapping("/users/{id}")

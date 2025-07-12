@@ -155,6 +155,40 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    public APIResponse processOAuthPostLogin(UserDTO userDTO) {
+        APIResponse apiResponse = new APIResponse();
+
+        Users user = usersRepository.findByEmail(userDTO.getEmail());
+        if (user == null) {
+
+            Users user1 = new Users();
+
+            user1.setUsername(userDTO.getUsername());
+            user1.setEmail((userDTO.getEmail()));
+            user1.setRoleEnum(RoleEnum.CUSTOMER);
+            user1.setCreatedAt(LocalDateTime.now());
+            user1.setDeleted(false);
+            user1.setProvider("Google");
+            user1.setImg(userDTO.getImg());
+            user1.setCreatedAt(LocalDateTime.now());
+
+            usersRepository.save(user1);
+
+            apiResponse.setStatusCode(200L);
+            apiResponse.setMessage("Save login google success");
+            apiResponse.setData(user1);
+            apiResponse.setTimestamp(LocalDateTime.now());
+            return apiResponse;
+        }
+
+        apiResponse.setStatusCode(200L);
+        apiResponse.setMessage("Save login google success");
+        apiResponse.setData(user);
+        apiResponse.setTimestamp(LocalDateTime.now());
+        return apiResponse;
+    }
+
+    @Override
     @Cacheable(value = "allUser")
     public APIResponse getAllUser() {
         APIResponse apiResponse = new APIResponse();
@@ -180,6 +214,31 @@ public class UserServiceImpl implements UserService{
         apiResponse.setStatusCode(200L);
         apiResponse.setMessage("Get all users success");
         apiResponse.setData(userDTOS);
+        apiResponse.setTimestamp(LocalDateTime.now());
+        return apiResponse;
+    }
+
+    @Override
+    public APIResponse getUserInfo(UserDetails userDetails) {
+        APIResponse apiResponse = new APIResponse();
+
+        Users user = usersRepository.findByUsername(userDetails.getUsername());
+
+        UserDTO userDTO = new UserDTO();
+        userDTO.setId(user.getId());
+        userDTO.setUsername(user.getUsername());
+        userDTO.setEmail(user.getEmail());
+        userDTO.setImg(user.getImg());
+        userDTO.setPhoneNumber(user.getPhoneNumber());
+        userDTO.setAddress(user.getAddress());
+        userDTO.setDescription(user.getDescription());
+        userDTO.setBirthDay(user.getBirthDay());
+        userDTO.setRoleEnum(user.getRoleEnum());
+        userDTO.setDeleted(user.isDeleted());
+
+        apiResponse.setStatusCode(200L);
+        apiResponse.setMessage("Get users info success");
+        apiResponse.setData(userDTO);
         apiResponse.setTimestamp(LocalDateTime.now());
         return apiResponse;
     }

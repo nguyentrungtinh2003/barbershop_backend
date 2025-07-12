@@ -49,6 +49,8 @@ public class Users implements UserDetails {
 
     private String description;
 
+    private String provider;
+
     private boolean isDeleted;
 
     private String otp;
