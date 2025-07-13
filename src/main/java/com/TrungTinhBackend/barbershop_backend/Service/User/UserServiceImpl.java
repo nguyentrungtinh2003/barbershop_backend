@@ -89,6 +89,7 @@ public class UserServiceImpl implements UserService{
         user1.setPassword(passwordEncoder.encode(registerDTO.getPassword()));
         user1.setPhoneNumber(registerDTO.getPhoneNumber());
         user1.setEmail(registerDTO.getEmail());
+        user1.setProvider("Local");
 
         if(registerDTO.getRoleEnum() != null) {
             user1.setRoleEnum(registerDTO.getRoleEnum());
@@ -165,6 +166,7 @@ public class UserServiceImpl implements UserService{
 
             user1.setUsername(userDTO.getUsername());
             user1.setEmail((userDTO.getEmail()));
+            user1.setPassword(passwordEncoder.encode("123456"));
             user1.setRoleEnum(RoleEnum.CUSTOMER);
             user1.setCreatedAt(LocalDateTime.now());
             user1.setDeleted(false);
