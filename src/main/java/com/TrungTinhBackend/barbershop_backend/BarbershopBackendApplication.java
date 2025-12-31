@@ -39,6 +39,11 @@ public class BarbershopBackendApplication {
 		System.setProperty("PAYPAL_CLIENT_SECRET", dotenv.get("PAYPAL_CLIENT_SECRET"));
 		System.setProperty("PAYPAL_MODE", dotenv.get("PAYPAL_MODE"));
 
+		System.setProperty("VNP_TMNCODE", dotenv.get("VNP_TMNCODE"));
+		System.setProperty("VNP_HASHSECRET", dotenv.get("VNP_HASHSECRET"));
+		System.setProperty("VNP_URL", dotenv.get("VNP_URL"));
+		System.setProperty("VNP_RETURN_URL", dotenv.get("VNP_RETURN_URL"));
+
 		SpringApplication.run(BarbershopBackendApplication.class, args);
 	}
 
