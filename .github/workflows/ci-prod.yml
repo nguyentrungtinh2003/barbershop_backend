@@ -9,7 +9,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set IMAGE_TAG from git commit
+      run: echo "IMAGE_TAG=${GITHUB_SHA::7}" >> $GITHUB_ENV
 
     - name: Set up JDK 17
       uses: actions/setup-java@v3
@@ -24,7 +28,7 @@ jobs:
       run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
     - name: Build Docker image
-      run: docker build -t nguyentrungtinh/barber-backend:${IMAGE_TAG} .
+      run: docker build -t nguyentrungtinh/barber-backend:${{ env.IMAGE_TAG }} .
 
     - name: Push Docker image
-      run: docker push nguyentrungtinh/barber-backend:${IMAGE_TAG}
+      run: docker push nguyentrungtinh/barber-backend:${{ env.IMAGE_TAG }}
