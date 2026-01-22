@@ -19,6 +19,8 @@ public class ShopDTO {
 
     private String address;
 
+    private String addressMap;
+
     private String img;
 
     private String slogan;

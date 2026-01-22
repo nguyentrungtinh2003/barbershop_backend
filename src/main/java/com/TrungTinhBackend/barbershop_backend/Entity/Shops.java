@@ -32,6 +32,9 @@ public class Shops {
 
     private String address;
 
+    @Column(name = "address_map",columnDefinition = "TEXT")
+    private String addressMap;
+
     private String img;
 
     private String slogan;
@@ -69,4 +72,7 @@ public class Shops {
     @OneToMany(mappedBy = "shop")
     @JsonIgnore
     private List<Appointments> appointments;
+
+    @OneToMany(mappedBy = "shop")
+    private List<Products> products;
 }

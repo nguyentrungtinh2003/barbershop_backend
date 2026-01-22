@@ -82,9 +82,16 @@ public class Users implements UserDetails {
     @JsonIgnore
     private List<Shops> shop;
 
+    @OneToMany(mappedBy = "customer")
+    @JsonIgnore
+    private List<Orders> orders;
+
     @ManyToMany(mappedBy = "barbers",cascade = {CascadeType.PERSIST,CascadeType.MERGE})
     @JsonIgnore
     private Set<Shops> shops;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Carts cart;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

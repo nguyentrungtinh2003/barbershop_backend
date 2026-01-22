@@ -60,6 +60,7 @@ public class ShopServiceImpl implements ShopService{
         }
         shop.setSlogan(shopDTO.getSlogan());
         shop.setAddress(shopDTO.getAddress());
+        shop.setAddressMap(shopDTO.getAddressMap());
         shop.setDeleted(false);
         shop.setOwner(owner);
 
@@ -177,6 +178,9 @@ public class ShopServiceImpl implements ShopService{
         }
         if (shopDTO.getAddress() != null) {
             shop.setAddress(shopDTO.getAddress());
+        }
+        if (shopDTO.getAddressMap() != null) {
+            shop.setAddressMap(shopDTO.getAddressMap());
         }
 
         if (img != null) {

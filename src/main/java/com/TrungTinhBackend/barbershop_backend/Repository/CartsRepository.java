@@ -1,0 +1,11 @@
+package com.TrungTinhBackend.barbershop_backend.Repository;
+
+import com.TrungTinhBackend.barbershop_backend.Entity.Carts;
+import com.TrungTinhBackend.barbershop_backend.Entity.Users;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface CartsRepository extends JpaRepository<Carts,Long> {
+    Carts findByUser(Users user);
+}

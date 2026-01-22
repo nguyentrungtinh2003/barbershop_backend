@@ -4,6 +4,7 @@ import com.TrungTinhBackend.barbershop_backend.Entity.Appointments;
 import com.TrungTinhBackend.barbershop_backend.Entity.Users;
 import com.TrungTinhBackend.barbershop_backend.Enum.PaymentMethod;
 import com.TrungTinhBackend.barbershop_backend.Enum.PaymentStatus;
+import com.TrungTinhBackend.barbershop_backend.Enum.PaymentType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
@@ -23,5 +24,7 @@ public class PaymentDTO {
     @Digits(integer = 10, fraction = 2, message = "Price must be a valid number with up to 2 decimal places!")
     private Double amount;
 
-    private String method;
+    private PaymentMethod method;
+
+    private PaymentType paymentType;
 }
