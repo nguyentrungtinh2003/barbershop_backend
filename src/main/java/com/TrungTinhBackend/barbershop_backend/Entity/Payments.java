@@ -2,6 +2,7 @@ package com.TrungTinhBackend.barbershop_backend.Entity;
 
 import com.TrungTinhBackend.barbershop_backend.Enum.PaymentMethod;
 import com.TrungTinhBackend.barbershop_backend.Enum.PaymentStatus;
+import com.TrungTinhBackend.barbershop_backend.Enum.PaymentType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -34,6 +35,8 @@ public class Payments {
     private PaymentStatus paymentStatus;
 
     private PaymentMethod paymentMethod;
+
+    private PaymentType paymentType;
 
     private LocalDateTime createdAt;
 

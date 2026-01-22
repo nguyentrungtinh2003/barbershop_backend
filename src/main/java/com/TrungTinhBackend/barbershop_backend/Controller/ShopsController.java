@@ -29,7 +29,7 @@ public class ShopsController {
         return ResponseEntity.ok(shopService.getShopByPage(page, size));
     }
 
-    @GetMapping("/shops/all")
+    @GetMapping("shops/all")
     public ResponseEntity<APIResponse> getAllShop() throws IOException {
         return ResponseEntity.ok(shopService.getAllShop());
     }

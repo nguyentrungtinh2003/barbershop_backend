@@ -1,5 +1,6 @@
 package com.TrungTinhBackend.barbershop_backend.DTO;
 
+import com.TrungTinhBackend.barbershop_backend.Entity.Carts;
 import com.TrungTinhBackend.barbershop_backend.Enum.RoleEnum;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -30,4 +31,6 @@ public class UserDTO {
     private String description;
 
     private boolean isDeleted;
+
+    private Long cartId;
 }

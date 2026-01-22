@@ -28,3 +28,4 @@ public interface UserService {
     APIResponse verifyOtpAndChangePassword(ResetPasswordDTO resetPasswordDTO) throws Exception;
     APIResponse logout(Long id, HttpServletResponse response);
 }
+

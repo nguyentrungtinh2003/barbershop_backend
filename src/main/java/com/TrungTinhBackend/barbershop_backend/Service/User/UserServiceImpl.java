@@ -4,6 +4,7 @@ import com.TrungTinhBackend.barbershop_backend.DTO.LoginDTO;
 import com.TrungTinhBackend.barbershop_backend.DTO.RegisterDTO;
 import com.TrungTinhBackend.barbershop_backend.DTO.ResetPasswordDTO;
 import com.TrungTinhBackend.barbershop_backend.DTO.UserDTO;
+import com.TrungTinhBackend.barbershop_backend.Entity.Carts;
 import com.TrungTinhBackend.barbershop_backend.Entity.RefreshTokens;
 import com.TrungTinhBackend.barbershop_backend.Entity.Users;
 import com.TrungTinhBackend.barbershop_backend.Enum.RoleEnum;
@@ -11,6 +12,7 @@ import com.TrungTinhBackend.barbershop_backend.Exception.NotFoundException;
 import com.TrungTinhBackend.barbershop_backend.Repository.RefreshTokensRepository;
 import com.TrungTinhBackend.barbershop_backend.Repository.UsersRepository;
 import com.TrungTinhBackend.barbershop_backend.Response.APIResponse;
+import com.TrungTinhBackend.barbershop_backend.Service.Cart.CartService;
 import com.TrungTinhBackend.barbershop_backend.Service.Email.EmailService;
 import com.TrungTinhBackend.barbershop_backend.Service.Img.ImgService;
 import com.TrungTinhBackend.barbershop_backend.Service.Jwt.JwtUtils;
@@ -108,6 +110,7 @@ public class UserServiceImpl implements UserService{
         if(registerDTO.getDescription() != null && !registerDTO.getDescription().isEmpty()) {
             user1.setDescription(registerDTO.getDescription());
         }
+
         user1.setCreatedAt(LocalDateTime.now());
         user1.setDeleted(false);
 
@@ -237,6 +240,7 @@ public class UserServiceImpl implements UserService{
         userDTO.setBirthDay(user.getBirthDay());
         userDTO.setRoleEnum(user.getRoleEnum());
         userDTO.setDeleted(user.isDeleted());
+        userDTO.setCartId(user.getCart().getId());
 
         apiResponse.setStatusCode(200L);
         apiResponse.setMessage("Get users info success");
