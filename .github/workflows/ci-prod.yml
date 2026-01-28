@@ -28,7 +28,15 @@ jobs:
       run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
     - name: Build Docker image
-      run: docker build -t nguyentrungtinh/barber-shop-backend:${{ env.IMAGE_TAG }} .
+      run: |
+        docker build \
+        -t nguyentrungtinh/barber-shop-backend:${{ env.IMAGE_TAG }} \
+        -t nguyentrungtinh/barber-shop-backend:prod \
+        .
+
 
     - name: Push Docker image
-      run: docker push nguyentrungtinh/barber-shop-backend:${{ env.IMAGE_TAG }}
+      run: |
+        docker push nguyentrungtinh/barber-shop-backend:${{ env.IMAGE_TAG }}
+        docker push nguyentrungtinh/barber-shop-backend:prod
+
