@@ -21,4 +21,4 @@ jobs:
       run: mvn clean package -DskipTests
 
     - name: Build Docker image (test only)
-      run: docker build -t barber-backend:test .
+      run: docker build -t barber-shop-backend:test .
