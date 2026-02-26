@@ -10,6 +10,7 @@ public interface ProductService {
     APIResponse addProduct(ProductsDTO productsDTO,MultipartFile img) throws IOException;
     APIResponse getProductByPage(int page, int size);
     APIResponse getProductById(Long id);
+    APIResponse getProductByShopId(Long shopId);
     APIResponse updateProduct(Long id, ProductsDTO productsDTO, MultipartFile img) throws IOException;
     APIResponse deleteProduct(Long id);
     APIResponse restoreProduct(Long id);

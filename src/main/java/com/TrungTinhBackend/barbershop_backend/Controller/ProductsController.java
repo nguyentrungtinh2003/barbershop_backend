@@ -35,6 +35,11 @@ public class ProductsController {
         return ResponseEntity.ok(productService.getProductById(id));
     }
 
+    @GetMapping("/customer/products/shopId/{shopId}")
+    public ResponseEntity<APIResponse> getProductByShopId(@PathVariable Long shopId) throws IOException {
+        return ResponseEntity.ok(productService.getProductByShopId(shopId));
+    }
+
     @PutMapping("/owner/products/update/{id}")
     public ResponseEntity<APIResponse> updateProduct(@PathVariable Long id,
                                                   @RequestPart(name = "product") ProductsDTO productsDTO,

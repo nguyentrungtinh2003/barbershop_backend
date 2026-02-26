@@ -13,7 +13,8 @@ public class ShopSpecification {
             }
             String pattern = "%" + keyword.toLowerCase() + "%";
             return criteriaBuilder.or(
-                    criteriaBuilder.like(criteriaBuilder.lower(root.get("name")),pattern)
+                    criteriaBuilder.like(criteriaBuilder.lower(root.get("name")),pattern),
+                    criteriaBuilder.like(criteriaBuilder.lower(root.get("address")),pattern)
             );
         };
     }

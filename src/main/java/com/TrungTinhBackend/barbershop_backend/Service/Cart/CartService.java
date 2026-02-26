@@ -10,4 +10,5 @@ public interface CartService {
     APIResponse getCartItemByCart(Long cartId);
     APIResponse updateItem(Long id,Integer quantity);
     APIResponse deleteItem(Long id);
+    APIResponse deleteCart(Long id);
 }

@@ -34,7 +34,7 @@ public class ShopsController {
         return ResponseEntity.ok(shopService.getAllShop());
     }
 
-    @GetMapping("/owner/shops/search")
+    @GetMapping("/customer/shops/search")
     public ResponseEntity<APIResponse> searchUser(@RequestParam(name = "keyword") String keyword,
                                                   @RequestParam(defaultValue = "0") int page,
                                                   @RequestParam(defaultValue = "4") int size) throws IOException {

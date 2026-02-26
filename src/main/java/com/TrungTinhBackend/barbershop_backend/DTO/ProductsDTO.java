@@ -8,7 +8,7 @@ public class ProductsDTO {
     private String name;
     private String description;
     private String img;
-    private int price;
+    private Double price;
     private int stock;
 
     private Long shopId;

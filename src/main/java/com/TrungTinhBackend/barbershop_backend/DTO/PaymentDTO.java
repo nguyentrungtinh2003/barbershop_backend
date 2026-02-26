@@ -27,4 +27,6 @@ public class PaymentDTO {
     private PaymentMethod method;
 
     private PaymentType paymentType;
+    private Long orderId;
+    private Long appointmentId;
 }

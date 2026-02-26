@@ -1,9 +1,17 @@
 package com.TrungTinhBackend.barbershop_backend.Service.VNPay;
 
 import com.TrungTinhBackend.barbershop_backend.DTO.PaymentDTO;
+import com.TrungTinhBackend.barbershop_backend.Entity.Appointments;
+import com.TrungTinhBackend.barbershop_backend.Entity.Orders;
 import com.TrungTinhBackend.barbershop_backend.Entity.Payments;
 import com.TrungTinhBackend.barbershop_backend.Entity.Users;
+import com.TrungTinhBackend.barbershop_backend.Enum.OrderStatus;
+import com.TrungTinhBackend.barbershop_backend.Enum.PaymentMethod;
 import com.TrungTinhBackend.barbershop_backend.Enum.PaymentStatus;
+import com.TrungTinhBackend.barbershop_backend.Enum.PaymentType;
+import com.TrungTinhBackend.barbershop_backend.Exception.NotFoundException;
+import com.TrungTinhBackend.barbershop_backend.Repository.AppointmentsRepository;
+import com.TrungTinhBackend.barbershop_backend.Repository.OrderRepository;
 import com.TrungTinhBackend.barbershop_backend.Repository.PaymentsRepository;
 import com.TrungTinhBackend.barbershop_backend.Repository.UsersRepository;
 import com.TrungTinhBackend.barbershop_backend.Response.APIResponse;
@@ -29,6 +37,12 @@ public class VNPayServiceImpl implements VNPayService{
 
     @Autowired
     private PaymentsRepository paymentsRepository;
+
+    @Autowired
+    private OrderRepository orderRepository;
+
+    @Autowired
+    private AppointmentsRepository appointmentsRepository;
 
     @Value("${vnp_Url}")
     private String vnpUrl;
@@ -80,7 +94,40 @@ public class VNPayServiceImpl implements VNPayService{
     public APIResponse createPayment(HttpServletRequest request, PaymentDTO paymentDTO) throws NoSuchAlgorithmException, InvalidKeyException {
         APIResponse apiResponse = new APIResponse();
 
-        String vnp_TxnRef = String.valueOf(System.currentTimeMillis());
+        Users user = usersRepository.findById(paymentDTO.getUserId()).orElseThrow(
+                () -> new NotFoundException("User not found")
+        );
+
+        Orders orders = null;
+        if(paymentDTO.getOrderId() != null) {
+             orders = orderRepository.findById(paymentDTO.getOrderId()).orElseThrow(
+                    () -> new NotFoundException("Order not found")
+            );
+        }
+        Appointments appointments = null;
+        if(paymentDTO.getAppointmentId() != null) {
+             appointments = appointmentsRepository.findById(paymentDTO.getAppointmentId()).orElseThrow(
+                    () -> new NotFoundException("Appointment not found")
+            );
+        }
+
+        Payments transaction = new Payments();
+        transaction.setAmount(paymentDTO.getAmount());
+        transaction.setCustomer(user);
+
+        transaction.setPaymentStatus(PaymentStatus.PENDING);
+        transaction.setPaymentMethod(paymentDTO.getMethod());
+        if(orders != null) {
+            transaction.setOrders(orders);
+            transaction.setPaymentType(PaymentType.PRODUCT);
+        }else if (appointments != null) {
+            transaction.setAppointments(appointments);
+            transaction.setPaymentType(PaymentType.BOOKING);
+        }
+
+        Payments payments = paymentsRepository.save(transaction);
+
+        String vnp_TxnRef = String.valueOf(payments.getId());
         String vnp_IpAddr = request.getRemoteAddr();
 
         String orderType = "other";
@@ -96,7 +143,7 @@ public class VNPayServiceImpl implements VNPayService{
         vnpParams.put("vnp_OrderInfo", ORDER_INFO);
         vnpParams.put("vnp_OrderType", orderType);
         vnpParams.put("vnp_Locale", "vn");
-        vnpParams.put("vnp_ReturnUrl", vnpReturnUrl + "?userId=" + paymentDTO.getUserId());
+        vnpParams.put("vnp_ReturnUrl", vnpReturnUrl + "?userId=" + paymentDTO.getUserId() + "&orderId=" + paymentDTO.getOrderId());
         vnpParams.put("vnp_IpAddr", vnp_IpAddr);
 
         Calendar cal = Calendar.getInstance();
@@ -136,10 +183,10 @@ public class VNPayServiceImpl implements VNPayService{
 
         String responseCode = request.getParameter("vnp_ResponseCode");
         String amountStr = request.getParameter("vnp_Amount");
-        String userIdStr = request.getParameter("userId");
+        String vnp_TxnRef = request.getParameter("vnp_TxnRef");
 
         // Kiểm tra nếu có tham số thiếu
-        if (responseCode == null || amountStr == null || userIdStr == null) {
+        if (responseCode == null || amountStr == null) {
             response.setStatusCode(400L);
             response.setMessage("Thiếu thông tin thanh toán!");
             response.setData(null);
@@ -150,25 +197,26 @@ public class VNPayServiceImpl implements VNPayService{
         // Kiểm tra mã phản hồi VNPay
         if ("00".equals(responseCode)) {
             try {
-                double amountVND = Double.parseDouble(amountStr) / 100.0;
-                double coinAmount = amountVND / COIN_RATE;
+                long amountVND = Long.parseLong(amountStr) / 100;
 
-                Optional<Users> userOpt = usersRepository.findById(Long.parseLong(userIdStr));
-                if (userOpt.isEmpty()) {
-                    response.setStatusCode(404L);
-                    response.setMessage("User not found!");
-                    response.setData(null);
-                    response.setTimestamp(LocalDateTime.now());
-                    return response;
+                Payments payments = paymentsRepository.findById(Long.valueOf(vnp_TxnRef)).orElseThrow(
+                        () -> new NotFoundException("Payment not found")
+                );
+
+                if(amountVND != payments.getAmount()) {
+                    throw new RuntimeException("Amount mismatch");
+                }
+                payments.setPaymentStatus(PaymentStatus.COMPLETED);
+                payments.setCreatedAt(LocalDateTime.now());
+                payments.setUpdatedAt(LocalDateTime.now());
+                if(payments.getOrders() != null) {
+                    payments.getOrders().setStatus(OrderStatus.PAID);
+                }
+                if(payments.getAppointments() != null) {
+                    payments.getAppointments().setPaid(true);
                 }
 
-                Users user = userOpt.get();
-                Payments transaction = new Payments();
-                transaction.setAmount(amountVND);
-                transaction.setCustomer(user);
-                transaction.setCreatedAt(LocalDateTime.now());
-                transaction.setPaymentStatus(PaymentStatus.COMPLETED);
-                paymentsRepository.save(transaction);
+                paymentsRepository.save(payments);
 
                 response.setStatusCode(200L);
                 response.setMessage("Thanh toán thành công!");

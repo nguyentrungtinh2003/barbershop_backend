@@ -20,7 +20,7 @@ public class Products {
     private String name;
     private String description;
     private String img;
-    private int price;
+    private Double price;
     private int stock;
 
     private LocalDate createdAt;
@@ -34,6 +34,5 @@ public class Products {
 
     @ManyToOne
     @JoinColumn(name = "shop_id")
-    @JsonIgnore
     private Shops shop;
 }

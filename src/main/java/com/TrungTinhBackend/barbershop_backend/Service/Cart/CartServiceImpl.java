@@ -134,4 +134,20 @@ public class CartServiceImpl implements CartService{
         apiResponse.setTimestamp(LocalDateTime.now());
         return apiResponse;
     }
+
+    @Override
+    public APIResponse deleteCart(Long id) {
+        APIResponse apiResponse = new APIResponse();
+
+        Carts carts = cartsRepository.findById(id).orElseThrow(
+                () -> new NotFoundException("Cart not found")
+        );
+
+        cartItemRepository.deleteByCartId(carts.getId());
+
+        apiResponse.setStatusCode(200L);
+        apiResponse.setMessage("Delete cart success");
+        apiResponse.setTimestamp(LocalDateTime.now());
+        return apiResponse;
+    }
 }

@@ -1,5 +1,6 @@
 package com.TrungTinhBackend.barbershop_backend.Entity;
 
+import com.TrungTinhBackend.barbershop_backend.Enum.OrderType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -23,10 +24,12 @@ public class OrderItems {
     @JsonIgnore
     private Orders order;
 
-    @ManyToOne()
+    private OrderType orderType;
+    @ManyToOne
     @JoinColumn(name = "product_id")
     private Products product;
 
     private Double price;
     private Integer quantity;
+    private Double totalPrice;
 }

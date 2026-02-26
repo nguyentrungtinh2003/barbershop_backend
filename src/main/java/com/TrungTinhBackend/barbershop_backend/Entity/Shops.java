@@ -74,5 +74,6 @@ public class Shops {
     private List<Appointments> appointments;
 
     @OneToMany(mappedBy = "shop")
+    @JsonIgnore
     private List<Products> products;
 }

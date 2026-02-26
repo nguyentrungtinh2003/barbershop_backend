@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class ProductServiceImpl implements ProductService{
@@ -92,6 +93,19 @@ public class ProductServiceImpl implements ProductService{
         apiResponse.setStatusCode(200L);
         apiResponse.setMessage("Get product by id = "+id+" success");
         apiResponse.setData(product);
+        apiResponse.setTimestamp(LocalDateTime.now());
+        return apiResponse;
+    }
+
+    @Override
+    public APIResponse getProductByShopId(Long shopId) {
+        APIResponse apiResponse = new APIResponse();
+
+        List<Products> products = productsRepository.findByShopId(shopId);
+
+        apiResponse.setStatusCode(200L);
+        apiResponse.setMessage("Get product by shopId = "+shopId+" success");
+        apiResponse.setData(products);
         apiResponse.setTimestamp(LocalDateTime.now());
         return apiResponse;
     }

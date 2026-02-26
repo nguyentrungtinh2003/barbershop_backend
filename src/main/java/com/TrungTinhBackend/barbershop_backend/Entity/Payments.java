@@ -30,6 +30,10 @@ public class Payments {
     @JoinColumn(name = "appointment_id", referencedColumnName = "id")
     private Appointments appointments;
 
+    @OneToOne
+    @JoinColumn(name = "order_id", referencedColumnName = "id")
+    private Orders orders;
+
     private Double amount;
 
     private PaymentStatus paymentStatus;

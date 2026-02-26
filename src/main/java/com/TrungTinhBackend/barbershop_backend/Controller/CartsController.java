@@ -40,4 +40,9 @@ public class CartsController {
     public ResponseEntity<APIResponse> deleteCartItem(@PathVariable Long id) throws IOException {
         return ResponseEntity.ok(cartService.deleteItem(id));
     }
+
+    @DeleteMapping("/customer/delete/cart/{id}")
+    public ResponseEntity<APIResponse> deleteCart(@PathVariable Long id) throws IOException {
+        return ResponseEntity.ok(cartService.deleteCart(id));
+    }
 }
