@@ -10,7 +10,7 @@ public interface AppointmentService {
     APIResponse getAvailableTimeSlots(Long shopId, Long barberId,LocalDate date);
     APIResponse getAppointmentByPage(int page, int size);
     APIResponse getAppointmentById(Long id);
-    APIResponse getAppointmentByCustomerId(Long customerId);
+    APIResponse getAppointmentByCustomerId(Long customerId,int page, int size);
     APIResponse getAppointmentByBarberId(Long barberId);
     APIResponse getAppointmentByShopId(Long shopId);
     APIResponse getAppointmentByShopIdAndIsPaid(Long shopId);

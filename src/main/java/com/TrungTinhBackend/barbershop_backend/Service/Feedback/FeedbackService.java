@@ -10,9 +10,9 @@ public interface FeedbackService {
     APIResponse addFeedback(FeedbackDTO feedbackDTO, MultipartFile img) throws IOException;
     APIResponse getFeedbackByPage(int page, int size);
     APIResponse getFeedbackById(Long id);
-    APIResponse getFeedbackByShopId(Long shopId);
-    APIResponse getFeedbackByCustomerId(Long customerId);
-    APIResponse getFeedbackByBarberId(Long barberId);
+    APIResponse getFeedbackByShopId(Long shopId,int page,int size);
+    APIResponse getFeedbackByCustomerId(Long customerId, int page, int size);
+    APIResponse getFeedbackByBarberId(Long barberId, int page, int size);
     APIResponse searchFeedback(String keyword, int page, int size);
     APIResponse updateFeedback(Long id, FeedbackDTO feedbackDTO, MultipartFile img) throws IOException;
     APIResponse deleteFeedback(Long id);

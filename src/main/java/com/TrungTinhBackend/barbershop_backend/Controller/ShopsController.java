@@ -29,7 +29,7 @@ public class ShopsController {
         return ResponseEntity.ok(shopService.getShopByPage(page, size));
     }
 
-    @GetMapping("shops/all")
+    @GetMapping("/customer/shops/all")
     public ResponseEntity<APIResponse> getAllShop() throws IOException {
         return ResponseEntity.ok(shopService.getAllShop());
     }
@@ -41,7 +41,7 @@ public class ShopsController {
         return ResponseEntity.ok(shopService.searchShop(keyword, page, size));
     }
 
-    @GetMapping("/shops/{id}")
+    @GetMapping("/customer/shops/{id}")
     public ResponseEntity<APIResponse> getShopById(@PathVariable Long id) throws IOException {
         return ResponseEntity.ok(shopService.getShopById(id));
     }

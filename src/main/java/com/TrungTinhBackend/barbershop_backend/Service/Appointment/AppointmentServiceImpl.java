@@ -146,11 +146,11 @@ public class AppointmentServiceImpl implements AppointmentService{
     }
 
     @Override
-    public APIResponse getAppointmentByCustomerId(Long customerId) {
+    public APIResponse getAppointmentByCustomerId(Long customerId, int page, int size) {
         APIResponse apiResponse = new APIResponse();
 
-        List<Appointments> appointments = appointmentsRepository.findByCustomerId(customerId);
-        appointments.sort(Comparator.comparing(Appointments::getCreatedAt));
+        Pageable pageable = PageRequest.of(page,size,Sort.by("createdAt").descending());
+        Page<Appointments> appointments = appointmentsRepository.findByCustomerId(customerId,pageable);
 
         apiResponse.setStatusCode(200L);
         apiResponse.setMessage("Get appointment by customerId = "+customerId+" success");

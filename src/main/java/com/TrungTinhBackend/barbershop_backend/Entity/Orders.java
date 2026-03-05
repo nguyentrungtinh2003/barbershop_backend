@@ -1,6 +1,7 @@
 package com.TrungTinhBackend.barbershop_backend.Entity;
 
 import com.TrungTinhBackend.barbershop_backend.Enum.OrderStatus;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,6 +24,10 @@ public class Orders {
     @ManyToOne()
     @JoinColumn(name = "customer_id")
     private Users customer;
+
+    @ManyToOne()
+    @JoinColumn(name = "shop_id")
+    private Shops shop;
 
     @OneToMany(mappedBy = "order",cascade = CascadeType.ALL)
     private List<OrderItems> orderItems;

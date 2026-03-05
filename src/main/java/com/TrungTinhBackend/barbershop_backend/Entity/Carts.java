@@ -26,5 +26,6 @@ public class Carts {
     private Users user;
 
     @OneToMany(mappedBy = "cart",cascade = CascadeType.ALL,orphanRemoval = true)
+    @JsonIgnore
     private List<CartItems> cartItems;
 }

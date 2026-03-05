@@ -35,18 +35,24 @@ public class FeedbacksController {
     }
 
     @GetMapping("/shop/{shopId}")
-    public ResponseEntity<APIResponse> getFeedbackByShopId(@PathVariable Long shopId) throws IOException {
-        return ResponseEntity.ok(feedbackService.getFeedbackByShopId(shopId));
+    public ResponseEntity<APIResponse> getFeedbackByShopId(@PathVariable Long shopId,
+                                                           @RequestParam(defaultValue = "0") int page,
+                                                           @RequestParam(defaultValue = "6") int size) throws IOException {
+        return ResponseEntity.ok(feedbackService.getFeedbackByShopId(shopId,page,size));
     }
 
     @GetMapping("/customer/{customerId}")
-    public ResponseEntity<APIResponse> getFeedbackByCustomerId(@PathVariable Long customerId) throws IOException {
-        return ResponseEntity.ok(feedbackService.getFeedbackByCustomerId(customerId));
+    public ResponseEntity<APIResponse> getFeedbackByCustomerId(@PathVariable Long customerId,
+                                                               @RequestParam(defaultValue = "0") int page,
+                                                               @RequestParam(defaultValue = "6") int size) throws IOException {
+        return ResponseEntity.ok(feedbackService.getFeedbackByCustomerId(customerId,page,size));
     }
 
     @GetMapping("/barber/{barberId}")
-    public ResponseEntity<APIResponse> getFeedbackByBarberId(@PathVariable Long barberId) throws IOException {
-        return ResponseEntity.ok(feedbackService.getFeedbackByBarberId(barberId));
+    public ResponseEntity<APIResponse> getFeedbackByBarberId(@PathVariable Long barberId,
+                                                             @RequestParam(defaultValue = "0") int page,
+                                                             @RequestParam(defaultValue = "6") int size) throws IOException {
+        return ResponseEntity.ok(feedbackService.getFeedbackByBarberId(barberId,page,size));
     }
 
     @GetMapping("/search")

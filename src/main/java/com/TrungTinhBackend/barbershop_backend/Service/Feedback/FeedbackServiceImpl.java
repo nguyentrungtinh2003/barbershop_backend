@@ -184,13 +184,13 @@ public class FeedbackServiceImpl implements FeedbackService{
     }
 
     @Override
-    public APIResponse getFeedbackByShopId(Long shopId) {
+    public APIResponse getFeedbackByShopId(Long shopId, int page, int size) {
         APIResponse apiResponse = new APIResponse();
 
-        List<Feedbacks> feedbacks = feedbacksRepository.findByShopId(shopId);
-        feedbacks.sort(Comparator.comparing(Feedbacks::getCreatedAt));
+        Pageable pageable = PageRequest.of(page,size,Sort.by("createdAt").descending());
+        Page<Feedbacks> feedbacks = feedbacksRepository.findByShopId(shopId,pageable);
 
-        List<FeedbackDTO> feedbackDTOList = feedbacks.stream().map(feedback -> {
+        Page<FeedbackDTO> feedbackDTOList = feedbacks.map(feedback -> {
             FeedbackDTO feedbackDTO = new FeedbackDTO();
             feedbackDTO.setId(feedback.getId());
             feedbackDTO.setRating(feedback.getRating());
@@ -209,7 +209,7 @@ public class FeedbackServiceImpl implements FeedbackService{
             feedbackDTO.setImg(feedback.getImg());
 
             return feedbackDTO;
-        }).toList();
+        });
 
         apiResponse.setStatusCode(200L);
         apiResponse.setMessage("Get feedback by ShopId = "+shopId+" success");
@@ -219,13 +219,13 @@ public class FeedbackServiceImpl implements FeedbackService{
     }
 
     @Override
-    public APIResponse getFeedbackByCustomerId(Long customerId) {
+    public APIResponse getFeedbackByCustomerId(Long customerId, int page, int size) {
         APIResponse apiResponse = new APIResponse();
 
-        List<Feedbacks> feedbacks = feedbacksRepository.findByCustomerId(customerId);
-        feedbacks.sort(Comparator.comparing(Feedbacks::getCreatedAt));
+        Pageable pageable = PageRequest.of(page,size,Sort.by("createdAt").descending());
+        Page<Feedbacks> feedbacks = feedbacksRepository.findByCustomerId(customerId,pageable);
 
-        List<FeedbackDTO> feedbackDTOList = feedbacks.stream().map(feedback -> {
+        Page<FeedbackDTO> feedbackDTOList = feedbacks.map(feedback -> {
             FeedbackDTO feedbackDTO = new FeedbackDTO();
             feedbackDTO.setId(feedback.getId());
             feedbackDTO.setRating(feedback.getRating());
@@ -244,7 +244,7 @@ public class FeedbackServiceImpl implements FeedbackService{
             feedbackDTO.setImg(feedback.getImg());
 
             return feedbackDTO;
-        }).toList();
+        });
 
 
         apiResponse.setStatusCode(200L);
@@ -255,13 +255,13 @@ public class FeedbackServiceImpl implements FeedbackService{
     }
 
     @Override
-    public APIResponse getFeedbackByBarberId(Long barberId) {
+    public APIResponse getFeedbackByBarberId(Long barberId, int page, int size) {
         APIResponse apiResponse = new APIResponse();
 
-        List<Feedbacks> feedbacks = feedbacksRepository.findByBarberId(barberId);
-        feedbacks.sort(Comparator.comparing(Feedbacks::getCreatedAt));
+        Pageable pageable = PageRequest.of(page,size,Sort.by("createdAt").descending());
+        Page<Feedbacks> feedbacks = feedbacksRepository.findByBarberId(barberId,pageable);
 
-        List<FeedbackDTO> feedbackDTOList = feedbacks.stream().map(feedback -> {
+        Page<FeedbackDTO> feedbackDTOList = feedbacks.map(feedback -> {
             FeedbackDTO feedbackDTO = new FeedbackDTO();
             feedbackDTO.setId(feedback.getId());
             feedbackDTO.setRating(feedback.getRating());
@@ -280,7 +280,7 @@ public class FeedbackServiceImpl implements FeedbackService{
             feedbackDTO.setImg(feedback.getImg());
 
             return feedbackDTO;
-        }).toList();
+        });
 
 
         apiResponse.setStatusCode(200L);

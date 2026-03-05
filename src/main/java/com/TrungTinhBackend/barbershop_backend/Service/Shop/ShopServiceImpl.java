@@ -92,7 +92,6 @@ public class ShopServiceImpl implements ShopService{
         APIResponse apiResponse = new APIResponse();
 
         List<Shops> shops = shopsRepository.findAll();
-        shops.sort(Comparator.comparing(Shops::getCreatedAt, Comparator.nullsLast(Comparator.naturalOrder())));
 
         apiResponse.setStatusCode(200L);
         apiResponse.setMessage("Get all shop success");
