@@ -11,6 +11,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
@@ -37,7 +38,7 @@ public class Users implements UserDetails {
 
     private String address;
 
-    private LocalDateTime birthDay;
+    private LocalDate birthDay;
 
     private LocalDateTime createdAt;
 

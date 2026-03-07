@@ -42,7 +42,7 @@ public class AppointmentsController {
 
     @GetMapping("/customer/{customerId}")
     public ResponseEntity<APIResponse> getAppointmentByCustomerId(@PathVariable Long customerId,@RequestParam(defaultValue = "0") int page,
-                                                                  @RequestParam(defaultValue = "6") int size) throws IOException {
+                                                                  @RequestParam(defaultValue = "4") int size) throws IOException {
         return ResponseEntity.ok(appointmentService.getAppointmentByCustomerId(customerId,page,size));
     }
 

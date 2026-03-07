@@ -37,7 +37,6 @@ public class Appointments {
 
     @ManyToOne
     @JoinColumn(name = "customer_id")
-    @JsonIgnore
     private Users customer;
 
     @ManyToOne

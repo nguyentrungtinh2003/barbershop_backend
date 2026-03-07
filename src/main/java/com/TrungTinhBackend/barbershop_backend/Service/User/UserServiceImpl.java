@@ -6,10 +6,13 @@ import com.TrungTinhBackend.barbershop_backend.DTO.ResetPasswordDTO;
 import com.TrungTinhBackend.barbershop_backend.DTO.UserDTO;
 import com.TrungTinhBackend.barbershop_backend.Entity.Carts;
 import com.TrungTinhBackend.barbershop_backend.Entity.RefreshTokens;
+import com.TrungTinhBackend.barbershop_backend.Entity.Shops;
 import com.TrungTinhBackend.barbershop_backend.Entity.Users;
 import com.TrungTinhBackend.barbershop_backend.Enum.RoleEnum;
 import com.TrungTinhBackend.barbershop_backend.Exception.NotFoundException;
+import com.TrungTinhBackend.barbershop_backend.Repository.CartsRepository;
 import com.TrungTinhBackend.barbershop_backend.Repository.RefreshTokensRepository;
+import com.TrungTinhBackend.barbershop_backend.Repository.ShopsRepository;
 import com.TrungTinhBackend.barbershop_backend.Repository.UsersRepository;
 import com.TrungTinhBackend.barbershop_backend.Response.APIResponse;
 import com.TrungTinhBackend.barbershop_backend.Service.Cart.CartService;
@@ -37,14 +40,12 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -74,24 +75,35 @@ public class UserServiceImpl implements UserService{
     @Autowired
     private ImgService imgService;
 
+    @Autowired
+    private ShopsRepository shopsRepository;
+
+    @Autowired
+    private CartsRepository cartsRepository;
+
     private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
 
     @Override
-    @CacheEvict(value = {"allUser", "user", "pageUser"}, allEntries = true)
+    @Transactional
+//    @CacheEvict(value = {"allUser", "user", "pageUser"}, allEntries = true)
     public APIResponse register(RegisterDTO registerDTO, MultipartFile img) throws IOException {
         APIResponse apiResponse = new APIResponse();
 
-        Users user = usersRepository.findByPhoneNumber(registerDTO.getPhoneNumber());
-        if(user != null) {
+        Optional<Users> user = usersRepository.findByPhoneNumber(registerDTO.getPhoneNumber());
+        if(user.isPresent()) {
             throw new RuntimeException("Phone Number already exists !");
         }
         Users user1 = new Users();
+
+        Shops shop = null;
 
         user1.setUsername(registerDTO.getUsername());
         user1.setPassword(passwordEncoder.encode(registerDTO.getPassword()));
         user1.setPhoneNumber(registerDTO.getPhoneNumber());
         user1.setEmail(registerDTO.getEmail());
         user1.setProvider("Local");
+
+        System.out.println("PhoneNumber " + registerDTO.getPhoneNumber());
 
         if(registerDTO.getRoleEnum() != null) {
             user1.setRoleEnum(registerDTO.getRoleEnum());
@@ -114,21 +126,35 @@ public class UserServiceImpl implements UserService{
         user1.setCreatedAt(LocalDateTime.now());
         user1.setDeleted(false);
 
-        usersRepository.save(user1);
+        if(registerDTO.getShopId() != null && RoleEnum.BARBER.equals(registerDTO.getRoleEnum())) {
+            shop = shopsRepository.findById(registerDTO.getShopId()).orElseThrow(
+                    () -> new NotFoundException("Shop not found")
+            );
+            shop.getBarbers().add(user1);
+            shopsRepository.save(shop);
+        }
+
+       Users saveUser =  usersRepository.save(user1);
+
+        // tạo cart cho user
+        Carts cart = new Carts();
+        cart.setUser(saveUser);
+
+        cartsRepository.save(cart);
 
         // Gửi email sau khi đăng ký thành công
-        String to = user1.getEmail();
+        String to = saveUser.getEmail();
         String subject = "Đăng ký thành công";
-        String body = "Chào " + user1.getUsername() + ",\n\n"
+        String body = "Chào " + saveUser.getUsername() + ",\n\n"
                 + "Cảm ơn bạn đã đăng ký tài khoản. Chúc bạn trải nghiệm vui vẻ!\n\n"
                 + "Trân trọng,\n"
                 + "Đội ngũ phát triển";
 
-        emailService.sendEmail(to, subject, body);
+//        emailService.sendEmail(to, subject, body);
 
         apiResponse.setStatusCode(200L);
         apiResponse.setMessage("User register success");
-        apiResponse.setData(user1);
+        apiResponse.setData(saveUser);
         apiResponse.setTimestamp(LocalDateTime.now());
         return apiResponse;
     }
@@ -194,7 +220,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    @Cacheable(value = "allUser")
+//    @Cacheable(value = "allUser")
     public APIResponse getAllUser() {
         APIResponse apiResponse = new APIResponse();
 
@@ -265,7 +291,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    @Cacheable(value = "user",key = "#id")
+//    @Cacheable(value = "user",key = "#id")
     public APIResponse getUserById(Long id, UserDetails userDetails) {
         APIResponse apiResponse = new APIResponse();
 
@@ -307,7 +333,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    @CacheEvict(value = {"allUser", "user", "pageUser"}, allEntries = true)
+//    @CacheEvict(value = {"allUser", "user", "pageUser"}, allEntries = true)
     public APIResponse updateUser(Long id, UserDTO userDTO, MultipartFile img) throws IOException {
         APIResponse apiResponse = new APIResponse();
 
@@ -358,7 +384,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    @CacheEvict(value = {"allUser", "user", "pageUser"}, allEntries = true)
+//    @CacheEvict(value = {"allUser", "user", "pageUser"}, allEntries = true)
     public APIResponse deleteUser(Long id) {
         APIResponse apiResponse = new APIResponse();
 

@@ -44,7 +44,7 @@ public class FeedbacksController {
     @GetMapping("/customer/{customerId}")
     public ResponseEntity<APIResponse> getFeedbackByCustomerId(@PathVariable Long customerId,
                                                                @RequestParam(defaultValue = "0") int page,
-                                                               @RequestParam(defaultValue = "6") int size) throws IOException {
+                                                               @RequestParam(defaultValue = "3") int size) throws IOException {
         return ResponseEntity.ok(feedbackService.getFeedbackByCustomerId(customerId,page,size));
     }
 

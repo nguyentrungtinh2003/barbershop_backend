@@ -46,7 +46,7 @@ public class UsersController {
         return ResponseEntity.ok(userService.getUserByPage(page,size));
     }
 
-    @GetMapping("/users/info")
+    @GetMapping("/customer/users/info")
     public ResponseEntity<APIResponse> getUserInfo(@AuthenticationPrincipal UserDetails userDetails) {
         return ResponseEntity.ok(userService.getUserInfo(userDetails));
     }
